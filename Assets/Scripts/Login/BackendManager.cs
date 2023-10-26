@@ -26,6 +26,7 @@ public class BackendManager : MonoBehaviour
         }
 
         //Test();
+        //GameData();
     }
 
 
@@ -44,6 +45,15 @@ public class BackendManager : MonoBehaviour
             //BackendLogin.Instance.CustomSignUp("user1", "1234"); // 회원가입 함수
             BackendLogin.Instance.CustomLogin("user1", "1234"); // 뒤끝 로그인
             BackendLogin.Instance.UpdateNickname("Hi5ive GM"); // 닉네임 변겅
+            Debug.Log("테스트 종료");
+        });
+    }
+
+    async void GameData() {
+        await Task.Run(() => {
+            BackendLogin.Instance.CustomLogin("user1", "1234");
+            BackendGameData.Instance.GameDataInsert();
+
             Debug.Log("테스트 종료");
         });
     }
