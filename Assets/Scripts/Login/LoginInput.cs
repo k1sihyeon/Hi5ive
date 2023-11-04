@@ -14,7 +14,7 @@ public class LoginInput : MonoBehaviour
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private Button loginBtn;
-    [SerializeField] private Button signinBtn;
+    [SerializeField] private Button signupBtn;
     [SerializeField] private TMP_Text msgText;
 
     private void SetMessage(string msg) {
@@ -43,8 +43,8 @@ public class LoginInput : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void OnClickSignin() {
-        LoadScene("SigninScene");
+    public void OnClickSignup() {
+        LoadScene("SignUpScene");
     }
 
     public void OnClickLogin() {
@@ -61,7 +61,6 @@ public class LoginInput : MonoBehaviour
 
         StartCoroutine(nameof(LoginProcess));
         Login(id, password);
-
     }
 
     private void Login(string id, string password) {
