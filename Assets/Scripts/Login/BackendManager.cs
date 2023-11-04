@@ -11,7 +11,7 @@ public class BackendManager : MonoBehaviour
     private string password;
     private string username;
 
-    void Start()
+    private void BackendSetup()
     {
         var bro = Backend.Initialize(true); // 뒤끝 초기화
 
@@ -29,10 +29,17 @@ public class BackendManager : MonoBehaviour
         //GameData();
     }
 
+    private void Awake() {
+        DontDestroyOnLoad(gameObject);
+        BackendSetup();
+    }
+
 
     void Update()
     {
-        
+        if(Backend.IsInitialized) {
+            Backend.AsyncPoll();
+        }
     }
 
     //동기 함수를 비동기에서 호출하게 해주는 함수 (유니티 UI 접근 불가)

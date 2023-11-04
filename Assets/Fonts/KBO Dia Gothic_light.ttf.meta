@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 461379e7bcff3d54fb494697db868522
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - KBO Dia Gothic
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: e1f6fa61e691a5241b9cfed8582fd344, type: 3}
+  - {fileID: 12800000, guid: 90f85cb8434127f41812b3d4248229d8, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

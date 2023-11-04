@@ -17,7 +17,7 @@ public class BackendLogin {
 
             return _instance;
         }
-        
+
     }
 
     public void CustomSignUp(string id, string pw) {
@@ -41,10 +41,10 @@ public class BackendLogin {
         Debug.Log("로그인을 요청합니다.");
 
         var bro = Backend.BMember.CustomLogin(id, pw);
-        
+
         if (bro.IsSuccess()) {
             Debug.Log("로그인이 성공했습니다. : " + bro);
-            
+
         }
         else {
             Debug.LogError("로그인이 실패했습니다. : " + bro);
