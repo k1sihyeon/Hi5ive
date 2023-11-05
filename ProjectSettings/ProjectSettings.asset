@@ -101,7 +101,7 @@ PlayerSettings:
   xboxEnableFitness: 0
   visibleInBackground: 1
   allowFullscreenSwitch: 1
-  fullscreenMode: 1
+  fullscreenMode: 3
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
@@ -790,7 +790,7 @@ PlayerSettings:
   cloudProjectId: 760b46b8-6316-4b25-ac4a-8a65643cc0fe
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
+  projectName: Hi5ive
   organizationId: k1sihyeon
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
