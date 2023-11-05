@@ -6,13 +6,13 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using BackEnd;
 
-public class SigninInput : MonoBehaviour
+public class SignupInput : MonoBehaviour
 {
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private TMP_InputField nicknameInputField;
 
-    [SerializeField] private Button signinBtn;
+    [SerializeField] private Button signupBtn;
     [SerializeField] private TMP_Text msgText;
 
     private void SetMessage(string msg) {
@@ -45,7 +45,11 @@ public class SigninInput : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void OnClickSignin() {
+    public void OnClickToPrevious() {
+        LoadScene();
+    }
+
+    public void OnClickSignup() {
         SetMessage("");
         if (IsFieldEmpty()) return;
 
@@ -57,16 +61,16 @@ public class SigninInput : MonoBehaviour
         passwordInputField.text = "";
         nicknameInputField.text = "";
 
-        signinBtn.interactable = false;
+        signupBtn.interactable = false;
 
-        StartCoroutine(nameof(SigninProcess));
-        Signin(id, password, nickname);
+        StartCoroutine(nameof(SignupProcess));
+        Signup(id, password, nickname);
     }
 
 
-    private void Signin(string id, string password, string nickname) {
+    private void Signup(string id, string password, string nickname) {
         Backend.BMember.CustomSignUp(id, password, callback => {
-            StopCoroutine(nameof(SigninProcess));
+            StopCoroutine(nameof(SignupProcess));
 
             if (callback.IsSuccess()) {
                 Debug.Log("회원가입에 성공했습니다. : " + callback);
@@ -78,7 +82,7 @@ public class SigninInput : MonoBehaviour
             else {
                 Debug.LogError("회원가입에 실패했습니다. : " + callback);
 
-                signinBtn.interactable = true;
+                signupBtn.interactable = true;
 
                 string message = string.Empty;
 
@@ -97,7 +101,7 @@ public class SigninInput : MonoBehaviour
     }
 
 
-    private IEnumerator SigninProcess() {
+    private IEnumerator SignupProcess() {
         float time = 0;
 
         while (true) {

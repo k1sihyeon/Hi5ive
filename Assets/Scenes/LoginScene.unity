@@ -1281,10 +1281,8 @@ MonoBehaviour:
   idInputField: {fileID: 695684886}
   passwordInputField: {fileID: 829230711}
   loginBtn: {fileID: 676913643}
-  signinBtn: {fileID: 1136464053}
+  signupBtn: {fileID: 1136464053}
   msgText: {fileID: 696580329}
-  isLoginSuccess: 0
-  isSigninSuccess: 0
 --- !u!4 &724608603
 Transform:
   m_ObjectHideFlags: 0
@@ -1628,7 +1626,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sign in
+  m_text: Sign Up
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2010,7 +2008,7 @@ GameObject:
   - component: {fileID: 1136464053}
   - component: {fileID: 1136464056}
   m_Layer: 5
-  m_Name: SignInBtn
+  m_Name: SignUpBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2084,7 +2082,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 724608602}
         m_TargetAssemblyTypeName: LoginInput, Assembly-CSharp
-        m_MethodName: OnClickSignin
+        m_MethodName: OnClickSignup
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
