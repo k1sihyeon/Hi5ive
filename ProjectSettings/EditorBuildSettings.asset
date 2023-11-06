@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NetcodeTestingScene.unity
     guid: 0839aa4d285413a48af356e0d07a491e
+  - enabled: 1
+    path: Assets/Scenes/SignUpScene.unity
+    guid: f65f68144b23685438f422d6a1ca582c
+  - enabled: 1
+    path: Assets/Scenes/SelectStage.unity
+    guid: 0708c8ee351d87349838565c288d4060
   m_configObjects: {}
