@@ -63,6 +63,7 @@ public class PlayerController : NetworkBehaviour
         transform.Rotate(Vector3.up, rotationAmount);
     }
 
+
     [ServerRpc(RequireOwnership = false)]
     private void SendMovementDataServerRpc(Vector3 moveDirection)
     {
@@ -76,6 +77,47 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocalPlayer)
         {
             Move(moveDirection);
+        }
+    }
+
+    // Collision //
+    private void OnCollisionEnter(Collision collision) {
+
+        if(IsLocalPlayer) {
+
+            if (collision.gameObject.CompareTag("Enemy")) {
+                Debug.Log("Collison Detected");
+
+                ulong enemyNetworkId = collision.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
+                CollisionServerRpc(enemyNetworkId);
+            }
+        }
+
+    }
+
+    [ServerRpc]
+    private void CollisionServerRpc(ulong enemyNetworkId) {
+        Debug.Log("Collision Server 함수");
+
+        NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+        //GameObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId].gameObject;
+        if(enemyNetworkObject != null) {
+            enemyNetworkObject.Despawn();
+        }
+        
+        CollisionClientRpc(enemyNetworkId);
+    }
+
+    [ClientRpc]
+    private void CollisionClientRpc(ulong enemyNetworkId) {
+        Debug.Log("Collision Client 함수");
+
+        if(!IsLocalPlayer) {
+            NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+            //GameObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId].gameObject;
+            if (enemyNetworkObject != null) {
+                enemyNetworkObject.Despawn();
+            }
         }
     }
 }
