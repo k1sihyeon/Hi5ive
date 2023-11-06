@@ -24,11 +24,12 @@ TagManager:
   - Mineral 11
   - SunKilling
   - BlackHole
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Minimap
   - Water
   - UI
   - 
