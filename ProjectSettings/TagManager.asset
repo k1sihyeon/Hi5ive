@@ -25,6 +25,7 @@ TagManager:
   - SunKilling
   - BlackHole
   - Enemy
+  - Ground
   layers:
   - Default
   - TransparentFX
