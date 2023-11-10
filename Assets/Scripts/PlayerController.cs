@@ -7,6 +7,8 @@ public class PlayerController : NetworkBehaviour
     public float rotationSpeed = 100f;
     public float jumpForce = 10f; // 점프 힘
     private bool isGrounded = true; // 플레이어가 땅에 있는지 여부
+    public float playerHeightOffset = 1.15f;
+    public float distanceAhead = 1.0f;
 
     private Vector3 moveInput;
     private float rotationInput;
@@ -15,13 +17,53 @@ public class PlayerController : NetworkBehaviour
     private Camera playerCamera;
     private Renderer playerRenderer; // 플레이어의 렌더러 컴포넌트
 
+    public Animator anim;
+    [Header("Animation Smoothing")]
+    [Range(0, 1f)]
+    public float HorizontalAnimSmoothTime = 0.2f;
+    [Range(0, 1f)]
+    public float VerticalAnimTime = 0.2f;
+    [Range(0, 1f)]
+    public float StartAnimTime = 0.3f;
+    [Range(0, 1f)]
+    public float StopAnimTime = 0.15f;
+    public float InputX;
+    public float InputZ;
+    public float Speed;
+    public float desiredRotationSpeed = 0.1f;
+    public float allowPlayerRotation = 0.1f;
+
+
     private void Start()
     {
-        playerCamera = Camera.main;
-        playerCameraTransform = playerCamera.transform;
+
+        
+        //playerCamera = Camera.main;
+        //playerCameraTransform = playerCamera.transform;
 
         // 플레이어의 렌더러 컴포넌트 찾기
         playerRenderer = GetComponent<Renderer>();
+
+        anim = this.GetComponent<Animator>();
+
+        if (IsLocalPlayer)
+        {
+            Camera mainCamera = Camera.main;
+
+            if (mainCamera != null)
+            {
+                mainCamera.gameObject.SetActive(false); // 씬에 있는 일반 메인 카메라 비활성화
+            }
+
+            playerCamera = GetComponentInChildren<Camera>();
+            playerCamera.tag = "MainCamera";
+        }
+        else
+        {
+            // 로컬 플레이어가 아닌 경우 플레이어에 있는 카메라 비활성화
+            Camera playerCamera = GetComponentInChildren<Camera>();
+            playerCamera.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -43,21 +85,28 @@ public class PlayerController : NetworkBehaviour
             moveInput = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * moveInput;
 
             // 클라이언트 또는 호스트 플레이어일 때, 메인 카메라를 플레이어에게 고정
-            playerCameraTransform.position = transform.position;
-            playerCameraTransform.rotation = transform.rotation;
-
+           /* Vector3 playerTopPosition = transform.position + Vector3.up * playerHeightOffset;
+            playerTopPosition = playerTopPosition + Vector3.forward * distanceAhead;
+            playerCameraTransform.position = playerTopPosition;
+            playerCameraTransform.rotation = transform.rotation;*/
+           
             // 점프 처리
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
             {
-                playerRenderer.material.color = Color.red;
                 Jump();
 
             }
+
+            InputMagnitude();
+        }
+        else
+        {
+            Destroy(GetComponentInChildren<Camera>().gameObject);
         }
 
         // 서버로 이동 정보 보내기
         if (IsServer)
-        {
+        {            
             SendMovementDataServerRpc(moveInput);
         }
 
@@ -65,6 +114,30 @@ public class PlayerController : NetworkBehaviour
         if (!IsServer)
         {
             Move(moveInput);
+        }
+    }
+
+    void InputMagnitude()
+    {
+        //Calculate Input Vectors
+        InputX = Input.GetAxis("Horizontal");
+        InputZ = Input.GetAxis("Vertical");
+
+        //anim.SetFloat ("InputZ", InputZ, VerticalAnimTime, Time.deltaTime * 2f);
+        //anim.SetFloat ("InputX", InputX, HorizontalAnimSmoothTime, Time.deltaTime * 2f);
+
+        //Calculate the Input Magnitude
+        Speed = new Vector2(InputX, InputZ).sqrMagnitude;
+
+        //Physically move player
+
+        if (Speed > allowPlayerRotation)
+        {
+            anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
+        }
+        else if (Speed < allowPlayerRotation)
+        {
+            anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
         }
     }
 
