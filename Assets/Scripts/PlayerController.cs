@@ -101,7 +101,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            Destroy(GetComponentInChildren<Camera>().gameObject);
+            //Destroy(GetComponentInChildren<Camera>().gameObject);
         }
 
         // 서버로 이동 정보 보내기

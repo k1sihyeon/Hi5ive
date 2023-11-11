@@ -26,6 +26,12 @@ TagManager:
   - BlackHole
   - Enemy
   - Ground
+  - PlayerBullet
+  - CinemachineTarget
+  - EnemyBullet
+  - PlayerEyes
+  - Fire
+  - BallObstacle
   layers:
   - Default
   - TransparentFX
