@@ -3,6 +3,8 @@ using Unity.Netcode;
 
 public class PlayerController : NetworkBehaviour
 {
+    public static PlayerController instance;
+
     public float moveSpeed = 5f;
     public float rotationSpeed = 100f;
     public float jumpForce = 10f; // Á¡ÇÁ Èû
@@ -32,6 +34,12 @@ public class PlayerController : NetworkBehaviour
     public float Speed;
     public float desiredRotationSpeed = 0.1f;
     public float allowPlayerRotation = 0.1f;
+
+    private void Awake() {
+        if(PlayerController.instance == null ) {
+            PlayerController.instance = this;
+        }
+    }
 
 
     private void Start()

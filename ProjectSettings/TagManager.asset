@@ -39,8 +39,8 @@ TagManager:
   - Minimap
   - Water
   - UI
-  - 
-  - 
+  - Enemy
+  - PlayerUltimate
   - Player
   - Pulse
   - AI Enemy

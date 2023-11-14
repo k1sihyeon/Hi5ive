@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5011095027435478530}
   - component: {fileID: -6734668195123910808}
   - component: {fileID: 4101396190057791066}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -139,6 +139,18 @@ MonoBehaviour:
   moveSpeed: 5
   rotationSpeed: 100
   jumpForce: 10
+  playerHeightOffset: 1.15
+  distanceAhead: 1
+  anim: {fileID: 0}
+  HorizontalAnimSmoothTime: 0.2
+  VerticalAnimTime: 0.2
+  StartAnimTime: 0.3
+  StopAnimTime: 0.15
+  InputX: 0
+  InputZ: 0
+  Speed: 0
+  desiredRotationSpeed: 0.1
+  allowPlayerRotation: 0.1
 --- !u!114 &7720081289540314739
 MonoBehaviour:
   m_ObjectHideFlags: 0
