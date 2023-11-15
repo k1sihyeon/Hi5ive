@@ -25,4 +25,8 @@ public class UISliderController : MonoBehaviour {
     void Update() {
         UltimateBarSlider.value = val;
     }
+
+    void UpdateEnergyUI(float value) {
+        val = value;
+    }
 }

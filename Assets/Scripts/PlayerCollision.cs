@@ -13,11 +13,10 @@ public class PlayerCollision : NetworkBehaviour {
 
     static class define {
         public const short ENEMY_LAYER = 6;
-        public const short PLAYER_LAYER = 7;
-        public const short PLAYER_ULTIMATE_LAYER = 8;
+        public const short PLAYER_LAYER = 8;
+        public const short PLAYER_ULTIMATE_LAYER = 7;
     }
 
-    
 
     private float maxEnergy = 100f;
     private float energyIncreaseRate = 10f;
@@ -53,6 +52,7 @@ public class PlayerCollision : NetworkBehaviour {
     void OnUltimate() {
         Debug.Log("On Ultimate");
         currentEnergy = 0f;
+        UpdateEnergyClientRpc(currentEnergy);
         UpdateUltSlider();
 
         ignoringCollisions = true;
@@ -60,6 +60,7 @@ public class PlayerCollision : NetworkBehaviour {
         //gameObject.GetComponent<Collider>().enabled = false;
 
         PlayerController.instance.moveSpeed = 15f;
+        UpdatePlayerSpeedClientRpc(15f);
         //instance문 멀티에서 동작 x => controller, collision 통합 필요
 
         Invoke("OffUltimate", 3);
@@ -71,6 +72,7 @@ public class PlayerCollision : NetworkBehaviour {
         //gameObject.GetComponent<Collider>().enabled = true;
 
         PlayerController.instance.moveSpeed = 5f;
+        UpdatePlayerSpeedClientRpc(5f);
 
         ignoringCollisions = false;
     }
@@ -101,6 +103,7 @@ public class PlayerCollision : NetworkBehaviour {
 
             currentEnergy += energyIncreaseRate;
             UpdateUltSlider();
+            UpdateEnergyClientRpc(currentEnergy);
 
             //Ultimate
             if (currentEnergy >= maxEnergy) {
@@ -129,6 +132,12 @@ public class PlayerCollision : NetworkBehaviour {
     [ClientRpc]
     private void UpdateEnergyClientRpc(float energy) {
         currentEnergy = energy;
+        UpdateUltSlider();
+    }
+
+    [ClientRpc]
+    private void UpdatePlayerSpeedClientRpc(float speed) {
+        PlayerController.instance.moveSpeed = speed;
     }
 
 
