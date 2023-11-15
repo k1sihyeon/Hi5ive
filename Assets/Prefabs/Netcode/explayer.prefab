@@ -2139,7 +2139,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &2125441266827704300
 BoxCollider:
@@ -2194,7 +2194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeed: 100
-  jumpForce: 10
+  jumpForce: 5
   playerHeightOffset: 1.15
   distanceAhead: 0.5
   anim: {fileID: 0}
@@ -2219,8 +2219,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd34c9997d1798f4f81a55f18c9df26f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UltimateBarSlider: {fileID: 4301135019981599822, guid: 6e41ff07e633f7f41850801c5a8a4260,
-    type: 3}
 --- !u!114 &1971641010945288504
 MonoBehaviour:
   m_ObjectHideFlags: 0

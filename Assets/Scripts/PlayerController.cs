@@ -56,8 +56,11 @@ public class PlayerController : NetworkBehaviour
 
         if (IsLocalPlayer)
         {
+            
             Camera mainCamera = Camera.main;
-
+            transform.position = new Vector3(185f, -1f, 295f);
+            Quaternion newRotation = Quaternion.Euler(0f, -141f, 0f);
+            transform.rotation = newRotation;
             if (mainCamera != null)
             {
                 mainCamera.gameObject.SetActive(false); // 씬에 있는 일반 메인 카메라 비활성화
@@ -102,6 +105,7 @@ public class PlayerController : NetworkBehaviour
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
             {
                 Jump();
+                anim.SetTrigger("jump");
 
             }
 
@@ -191,6 +195,7 @@ public class PlayerController : NetworkBehaviour
         if (collision.gameObject.CompareTag("Ground")) // "Ground"는 땅 GameObject의 태그로 변경하세요.
         {
             isGrounded = true;
+
         }
     }
 }
