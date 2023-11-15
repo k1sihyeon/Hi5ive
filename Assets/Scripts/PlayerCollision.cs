@@ -11,12 +11,11 @@ public class PlayerCollision : NetworkBehaviour {
 
     public static PlayerCollision instance;
 
-    static class define {
+    static class Layer {
         public const short ENEMY_LAYER = 6;
         public const short PLAYER_LAYER = 8;
         public const short PLAYER_ULTIMATE_LAYER = 7;
     }
-
 
     private float maxEnergy = 100f;
     private float energyIncreaseRate = 10f;
@@ -56,7 +55,7 @@ public class PlayerCollision : NetworkBehaviour {
         UpdateUltSlider();
 
         ignoringCollisions = true;
-        gameObject.layer = define.PLAYER_ULTIMATE_LAYER; //충돌처리 꺼진 레이어로 변경
+        gameObject.layer = Layer.PLAYER_ULTIMATE_LAYER; //충돌처리 꺼진 레이어로 변경
         //gameObject.GetComponent<Collider>().enabled = false;
 
         PlayerController.instance.moveSpeed = 15f;
@@ -68,7 +67,7 @@ public class PlayerCollision : NetworkBehaviour {
 
     void OffUltimate() {
         Debug.Log("Off Ultimate");
-        gameObject.layer = define.PLAYER_LAYER; //원래 레이러로 복구
+        gameObject.layer = Layer.PLAYER_LAYER; //원래 레이러로 복구
         //gameObject.GetComponent<Collider>().enabled = true;
 
         PlayerController.instance.moveSpeed = 5f;
@@ -101,6 +100,10 @@ public class PlayerCollision : NetworkBehaviour {
                 NetworkDestroy(collision);
             }
 
+            if(collision.gameObject.CompareTag("Obstacle")) {
+                energyIncreaseRate = 30f;
+            }
+
             currentEnergy += energyIncreaseRate;
             UpdateUltSlider();
             UpdateEnergyClientRpc(currentEnergy);
@@ -113,7 +116,7 @@ public class PlayerCollision : NetworkBehaviour {
             }
         }
         else {
-            if(collision.gameObject.layer == define.ENEMY_LAYER) {
+            if(collision.gameObject.layer == Layer.ENEMY_LAYER) {
                 Debug.Log("returning");
                 return;
             }

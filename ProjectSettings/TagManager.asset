@@ -32,6 +32,7 @@ TagManager:
   - PlayerEyes
   - Fire
   - BallObstacle
+  - Obstacle
   layers:
   - Default
   - TransparentFX
