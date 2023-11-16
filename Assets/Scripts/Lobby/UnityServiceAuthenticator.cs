@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Unity.Services.Core;
+using Unity.Services.Lobbies;
 using Unity.Services.Authentication;
 
 namespace Hi5ive {
