@@ -33,7 +33,11 @@ TagManager:
   - Fire
   - BallObstacle
   - Obstacle
+<<<<<<< HEAD
   - SpeedUp
+=======
+  - Final
+>>>>>>> 072f203f49c72410168efaa448507cd3c0bd9343
   layers:
   - Default
   - TransparentFX
