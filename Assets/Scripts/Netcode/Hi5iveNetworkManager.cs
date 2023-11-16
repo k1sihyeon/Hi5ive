@@ -14,6 +14,8 @@ public class Hi5iveNetworkManager : MonoBehaviour {
 
     public void SetIp(string ip) {
         networkManager.GetComponent<UnityTransport>().ConnectionData.Address = ip;
+        networkManager.GetComponent<UnityTransport>().ConnectionData.ServerListenAddress = "0.0.0.0";
+        //이유는 모르겠지만 ServerListenAddress는 개발단계에서만 사용하라고 권고하고 있음
     }
 
 
