@@ -107,4 +107,29 @@ public class LoginInput : MonoBehaviour
         }
     }
 
+
+    private void Start() {
+
+    }
+
+    private void Update() {
+
+        if(Input.GetKeyDown(KeyCode.Return)) {
+            OnClickLogin();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            TMP_InputField currentInputField = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField>();
+
+            // 현재 InputField가 첫 번째 InputField이면 두 번째 InputField로 포커스 이동
+            if (currentInputField == idInputField) {
+                passwordInputField.Select();
+            }
+            // 현재 InputField가 두 번째 InputField이면 첫 번째 InputField로 포커스 이동
+            else if (currentInputField == passwordInputField) {
+                idInputField.Select();
+            }
+        }
+    }
+
 }

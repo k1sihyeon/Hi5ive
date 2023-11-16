@@ -65,20 +65,27 @@ public class LobbyManager : MonoBehaviour
             if(checkInField()) {
                 //join
                 PlayerPrefs.SetString("PlayerType", "Client");
-                //PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
+                PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
                 PlayerPrefs.SetString("IP", localIpInputField.text);
 
-                //SceneManager.LoadScene(dropdown.itemText.ToString());
-                SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
+
+                int ddIdx = dropdown.value;
+                string ddText = dropdown.options[ddIdx].text;
+                SceneManager.LoadScene(ddText);
+                //SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
+
 
             }
         });
 
         hostBtn.onClick.AddListener(() => {
             PlayerPrefs.SetString("PlayerType", "Host");
-            //PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
+            PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
 
-            SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
+            int ddIdx = dropdown.value;
+            string ddText = dropdown.options[ddIdx].text;
+            SceneManager.LoadScene(ddText);
+            //SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
         });
 
     }
