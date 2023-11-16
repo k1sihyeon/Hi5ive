@@ -44,6 +44,16 @@ public class PlayerCollision : NetworkBehaviour {
         }
     }
 
+    private void Update()
+    {
+        if(IsLocalPlayer)
+        {
+            //UpdatePlayerSpeedHostRpc(player.moveSpeed);
+            UpdatePlayerSpeedClientRpc(player.moveSpeed);
+        }
+        
+    }
+
     void UpdateUltSlider() {
 
         UISliderController.instance.val = currentEnergy / maxEnergy;
@@ -113,7 +123,8 @@ public class PlayerCollision : NetworkBehaviour {
                     // 일단 속도를 10으로 변경
                     PlayerController.instance.moveSpeed = 7f;
                     player.moveSpeed = 7f;
-
+                    
+                    
                     // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
                     StartCoroutine(ResetSpeedAfterDelay(3f));
 
@@ -167,8 +178,9 @@ public class PlayerCollision : NetworkBehaviour {
 
     [ClientRpc]
     private void UpdatePlayerSpeedClientRpc(float speed) {
-        PlayerController.instance.moveSpeed = speed;
-    }
+        player.moveSpeed = speed;
 
+    }
+    
 
 }
