@@ -103,6 +103,20 @@ public class PlayerCollision : NetworkBehaviour {
             if(collision.gameObject.CompareTag("Obstacle")) {
                 energyIncreaseRate = 30f;
             }
+            if (collision.gameObject.layer == LayerMask.NameToLayer("SpeedUp"))
+            {
+                if (IsLocalPlayer)
+                {
+                    Debug.Log("스피드업");
+                    // 일단 속도를 10으로 변경
+                    PlayerController.instance.moveSpeed = 7f;
+
+                    // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
+                    StartCoroutine(ResetSpeedAfterDelay(3f));
+
+                    
+                }
+            }
 
             currentEnergy += energyIncreaseRate;
             UpdateUltSlider();
@@ -121,6 +135,16 @@ public class PlayerCollision : NetworkBehaviour {
                 return;
             }
         }
+
+    }
+
+    IEnumerator ResetSpeedAfterDelay(float delay)
+    {
+        // delay 초 동안 대기
+        yield return new WaitForSeconds(delay);
+        // 대기 후에 속도를 5로 변경
+        PlayerController.instance.moveSpeed = 5f;
+
 
     }
 

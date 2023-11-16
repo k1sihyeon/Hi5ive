@@ -33,6 +33,7 @@ TagManager:
   - Fire
   - BallObstacle
   - Obstacle
+  - SpeedUp
   layers:
   - Default
   - TransparentFX
@@ -56,7 +57,7 @@ TagManager:
   - Chunk Cube LOD 0
   - Chunk Cube LOD 1
   - Chunk Cube LOD 2
-  - 
+  - SpeedUp
   - Menu Selector
   - 
   - Sun
