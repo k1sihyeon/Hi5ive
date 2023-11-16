@@ -33,6 +33,7 @@ TagManager:
   - Fire
   - BallObstacle
   - Obstacle
+  - Final
   layers:
   - Default
   - TransparentFX
