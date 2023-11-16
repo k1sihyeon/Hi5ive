@@ -39,7 +39,7 @@ public class LoginInput : MonoBehaviour
         return false;
     }
 
-    private void LoadScene(string sceneName = "SelectStage") {
+    private void LoadScene(string sceneName = "LobbyScene") {
         SceneManager.LoadScene(sceneName);
     }
 

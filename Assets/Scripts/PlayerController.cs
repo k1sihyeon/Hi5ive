@@ -58,7 +58,7 @@ public class PlayerController : NetworkBehaviour
         {
             
             Camera mainCamera = Camera.main;
-            transform.position = new Vector3(185f, -1f, 295f);
+            //transform.position = new Vector3(185f, -1f, 295f);
             Quaternion newRotation = Quaternion.Euler(0f, -141f, 0f);
             transform.rotation = newRotation;
             if (mainCamera != null)
