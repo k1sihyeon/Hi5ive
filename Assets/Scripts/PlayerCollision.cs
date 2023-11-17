@@ -13,9 +13,9 @@ public class PlayerCollision : NetworkBehaviour {
 
     public PlayerController player;
     static class Layer {
-        public const short ENEMY_LAYER = 6;
-        public const short PLAYER_LAYER = 8;
+        public const short PLAYER_LAYER = 6;
         public const short PLAYER_ULTIMATE_LAYER = 7;
+        public const short OBSTACLE_LAYER = 8;
     }
 
     private float maxEnergy = 100f;
@@ -144,7 +144,7 @@ public class PlayerCollision : NetworkBehaviour {
             }
         }
         else {
-            if(collision.gameObject.layer == Layer.ENEMY_LAYER) {
+            if(collision.gameObject.layer == Layer.OBSTACLE_LAYER) {
                 Debug.Log("returning");
                 return;
             }
