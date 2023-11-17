@@ -23249,7 +23249,7 @@ PrefabInstance:
     - target: {fileID: 1255189114688956198, guid: a509e19a80feb454594336c10bf4f7ee,
         type: 3}
       propertyPath: _percentage
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1255189114688956198, guid: a509e19a80feb454594336c10bf4f7ee,
         type: 3}
