@@ -148,7 +148,7 @@ public class PlayerCollision : NetworkBehaviour {
     [ClientRpc]
     private void CollisionClientRpc(ulong enemyNetworkId) {
         //if(!IsLocalPlayer) {
-            NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+            NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];    
             Destroy(enemyNetworkObject.gameObject);
         //}
     }
