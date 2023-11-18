@@ -145,12 +145,13 @@ public class PlayerCollision : NetworkBehaviour {
         PlayerController.instance.moveSpeed = 5f;
         player.moveSpeed = 5f;
     }
+
     [ClientRpc]
     private void CollisionClientRpc(ulong enemyNetworkId) {
-        //if(!IsLocalPlayer) {
-            NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];    
-            Destroy(enemyNetworkObject.gameObject);
-        //}
+
+        NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+        Destroy(enemyNetworkObject.gameObject);
+
     }
 
     [ClientRpc]
