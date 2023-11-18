@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerEndPoint : NetworkBehaviour {
+
+    [SerializeField] private TMP_Text rankText;
 
     private Vector3 observePoint = new Vector3(15, 25, -207);
     public int rank = 0;
@@ -23,7 +26,8 @@ public class PlayerEndPoint : NetworkBehaviour {
     }
 
     public void ActivateRankUI() {
-
+        rankText.text = $"{rank}등 입니다!!";
+        rankText.gameObject.SetActive(true);
     } 
 
     private void SetPosition(Vector3 point) {
