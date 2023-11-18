@@ -25,7 +25,7 @@ public class SpeedUpHandler : NetworkBehaviour
             StartCoroutine(ResetSpeedAfterDelay(3f));
         }
     }
-
+    
     private IEnumerator ResetSpeedAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

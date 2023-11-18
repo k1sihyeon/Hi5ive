@@ -20,7 +20,7 @@ public class PlayerCollision : NetworkBehaviour {
 
     private float maxEnergy = 100f;
     private float energyIncreaseRate = 10f;
-    private float currentEnergy = 0f;
+    [SerializeField] private float currentEnergy = 0f;
 
     private float collisionIgnoreTime = 5f;
     private bool ignoringCollisions = false;
@@ -35,12 +35,9 @@ public class PlayerCollision : NetworkBehaviour {
     private void Start() {
         if (IsServer) {
             currentEnergy = 0f;
-
         }
         else {
-            
             UpdateEnergyClientRpc(currentEnergy);
-            
         }
     }
 
@@ -56,8 +53,10 @@ public class PlayerCollision : NetworkBehaviour {
 
     void UpdateUltSlider() {
 
-        UISliderController.instance.val = currentEnergy / maxEnergy;
-
+        if(IsLocalPlayer) {
+            UISliderController.instance.val = currentEnergy / maxEnergy;
+        }
+        
     }
 
     void OnUltimate() {
@@ -163,7 +162,6 @@ public class PlayerCollision : NetworkBehaviour {
     [ClientRpc]
     private void UpdatePlayerSpeedClientRpc(float speed) {
         player.moveSpeed = speed;
-
     }
     
 
