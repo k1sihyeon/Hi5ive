@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerEndPoint : NetworkBehaviour {
 
@@ -16,16 +17,18 @@ public class PlayerEndPoint : NetworkBehaviour {
             return;
 
         if (collision.gameObject.CompareTag("EndPoint")) {
-            Debug.Log("End Point");
+            Debug.Log("Player End Point");
             SetPosition(observePoint);
 
-            //등수 계산
-            //player 등수 할당
-            //player ui에 표시
         }
     }
 
     public void ActivateRankUI() {
+
+        Debug.Log("activate rank ui");
+
+        UIController.instance.UpdateRankUI(rank);
+
         rankText.text = $"{rank}등 입니다!!";
         rankText.gameObject.SetActive(true);
     } 
@@ -49,7 +52,7 @@ public class PlayerEndPoint : NetworkBehaviour {
     // Start is called before the first frame update
     void Start()
     {
-        
+        //rankText = GetComponent<TMP_Text>();
     }
 
     // Update is called once per frame

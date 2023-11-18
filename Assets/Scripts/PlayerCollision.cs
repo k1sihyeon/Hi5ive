@@ -54,7 +54,7 @@ public class PlayerCollision : NetworkBehaviour {
     void UpdateUltSlider() {
 
         if(IsLocalPlayer) {
-            UISliderController.instance.val = currentEnergy / maxEnergy;
+            UIController.instance.ultVal = currentEnergy / maxEnergy;
         }
         
     }

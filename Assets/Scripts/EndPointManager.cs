@@ -10,13 +10,19 @@ public class EndPointManager : NetworkBehaviour {
     private Vector3 observePoint = new Vector3(15, 25, -207);
     private int rank = 0;
     private PlayerController player;
-    private PlayerEndPoint playerEndPoint;
+    [SerializeField] private PlayerEndPoint playerEndPoint;
 
     // Start is called before the first frame update
     void Start() {
         //player = GetComponent<PlayerController>();
         playerEndPoint = GetComponent<PlayerEndPoint>();
+
+        if(playerEndPoint == null) {
+            Debug.Log("player end point is NULL!!");
+            //생성 순서 때문에  null  임
+        }
     }
+
 
     // Update is called once per frame
     void Update() {
@@ -36,7 +42,12 @@ public class EndPointManager : NetworkBehaviour {
             //player ui에 표시
             rank += 1;
 
+            UpdateRank();
+
             if (IsLocalPlayer) {
+
+
+
                 playerEndPoint.rank = rank;
                 playerEndPoint.ActivateRankUI();
             }
@@ -45,6 +56,14 @@ public class EndPointManager : NetworkBehaviour {
 
 
         }
+    }
+
+    private void UpdateRank() {
+        //if(IsLocalPlayer) {
+
+            UIController.instance.UpdateRankUI(rank);
+            
+        //}
     }
 
     private void SetPosition(GameObject obj, Vector3 point) {
