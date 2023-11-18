@@ -19,7 +19,16 @@ public class SpeedUpHandler : NetworkBehaviour
         {
             Debug.Log("발판밟음");
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            SetPlayerSpeedClientRpc(10f);
+            SetPlayerSpeedClientRpc(8.5f);
+
+            // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
+            StartCoroutine(ResetSpeedAfterDelay(2f));
+        }
+        if(other.CompareTag("Super_SpeedUp"))
+        {
+            Debug.Log("스피드업밟음");
+            // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
+            SetPlayerSpeedClientRpc(11f);
 
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(3f));
