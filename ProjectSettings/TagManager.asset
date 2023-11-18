@@ -12,6 +12,7 @@ TagManager:
   - SpeedUp
   - PlayerEyes
   - EndPoint
+  - Super_SpeedUp
   layers:
   - Default
   - TransparentFX
