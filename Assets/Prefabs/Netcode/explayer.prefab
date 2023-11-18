@@ -2195,9 +2195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb7fef2d48ddc244683468605494f89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 7
   rotationSpeed: 100
-  jumpForce: 5
+  jumpForce: 6
   playerHeightOffset: 1.15
   distanceAhead: 0.5
   anim: {fileID: 0}

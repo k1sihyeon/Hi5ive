@@ -39,7 +39,7 @@ public class SpeedUpHandler : NetworkBehaviour
     {
         yield return new WaitForSeconds(delay);
         // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-        SetPlayerSpeedClientRpc(5f);
+        SetPlayerSpeedClientRpc(7f);
     }
 
     [ClientRpc]

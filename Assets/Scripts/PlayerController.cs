@@ -6,9 +6,9 @@ public class PlayerController : NetworkBehaviour
 {
     public static PlayerController instance;
 
-    public float moveSpeed = 5f;
+    public float moveSpeed = 7f;
     public float rotationSpeed = 100f;
-    public float jumpForce = 10f; // 점프 힘
+    public float jumpForce = 6f; // 점프 힘
     private bool isGrounded = true; // 플레이어가 땅에 있는지 여부
     private bool is_first_jump = true;
     public float playerHeightOffset = 1.15f;
