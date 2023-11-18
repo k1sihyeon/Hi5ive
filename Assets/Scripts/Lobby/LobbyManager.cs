@@ -11,7 +11,8 @@ public class LobbyManager : MonoBehaviour
 
     [SerializeField] private TMP_InputField localIpInputField;
     [SerializeField] private Button localJoinBtn;
-    [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private TMP_Dropdown localDD;
+    [SerializeField] private TMP_Dropdown hostDD;
 
     [SerializeField] private Button hostBtn;
 
@@ -53,7 +54,8 @@ public class LobbyManager : MonoBehaviour
         // 내부 아이피 범위 확인
         if ((addressBytes[0] == 10) ||
             (addressBytes[0] == 172 && (addressBytes[1] >= 16 && addressBytes[1] <= 31)) ||
-            (addressBytes[0] == 192 && addressBytes[1] == 168)) {
+            (addressBytes[0] == 192 && addressBytes[1] == 168) ||
+            (addressBytes[0] == 127 && addressBytes[1] == 0)) {
             return true;
         }
 
@@ -65,12 +67,12 @@ public class LobbyManager : MonoBehaviour
             if(checkInField()) {
                 //join
                 PlayerPrefs.SetString("PlayerType", "Client");
-                PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
+                PlayerPrefs.SetString("SceneName", localDD.itemText.ToString());
                 PlayerPrefs.SetString("IP", localIpInputField.text);
 
 
-                int ddIdx = dropdown.value;
-                string ddText = dropdown.options[ddIdx].text;
+                int ddIdx = localDD.value;
+                string ddText = localDD.options[ddIdx].text;
                 SceneManager.LoadScene(ddText);
                 //SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
 
@@ -80,12 +82,11 @@ public class LobbyManager : MonoBehaviour
 
         hostBtn.onClick.AddListener(() => {
             PlayerPrefs.SetString("PlayerType", "Host");
-            PlayerPrefs.SetString("SceneName", dropdown.itemText.ToString());
+            PlayerPrefs.SetString("SceneName", hostDD.itemText.ToString());
 
-            int ddIdx = dropdown.value;
-            string ddText = dropdown.options[ddIdx].text;
+            int ddIdx = hostDD.value;
+            string ddText = hostDD.options[ddIdx].text;
             SceneManager.LoadScene(ddText);
-            //SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
         });
 
     }
