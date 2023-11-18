@@ -1,16 +1,16 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//This script requires you to have setup your animator with 3 parameters, "InputMagnitude", "InputX", "InputZ"
-//With a blend tree to control the inputmagnitude and allow blending between animations.
 [RequireComponent(typeof(CharacterController))]
-public class MovementInput : MonoBehaviour {
-
+public class MovementInput : MonoBehaviour
+{
     public float moveSpeed = 5f;
+    public float rotationSpeed = 100f; // 회전 속도
     public float jumpForce = 7f; // 점프 힘
     public float doubleJumpForce = 5f; // 이중 점프 힘
+    public float desiredRotationSpeed = 0.1f; // 원하는 회전 속도
+
     private bool isGrounded;
     private bool canDoubleJump = true;
     public Camera playerCamera; // 플레이어의 카메라
@@ -19,6 +19,7 @@ public class MovementInput : MonoBehaviour {
 
     private Vector3 playerVelocity;
     private float gravityValue = -9.81f; // 중력 값
+    private DialogueSystem dialogueSystem; // 대화 시스템 컴포넌트 추가
 
     private void Start()
     {
@@ -30,9 +31,15 @@ public class MovementInput : MonoBehaviour {
         playerCamera.transform.localPosition = new Vector3(0, 1.6f, 0);
         playerCamera.transform.localRotation = Quaternion.identity;
     }
-
+    private void Awake()
+    {
+        dialogueSystem = FindObjectOfType<DialogueSystem>(); // 대화 시스템 컴포넌트를 찾습니다.
+    }
     private void Update()
     {
+        // 대화 시스템이 완료되었는지 확인
+        if (dialogueSystem && !dialogueSystem.dialogueCompleted) return;
+
         isGrounded = controller.isGrounded;
         if (isGrounded)
         {
@@ -41,18 +48,16 @@ public class MovementInput : MonoBehaviour {
         }
         else
         {
-            playerVelocity.y += gravityValue * Time.deltaTime; // 중력 적용
+            playerVelocity.y += gravityValue * Time.deltaTime;
         }
 
-        // 바닥에 닿았는지 확인합니다.
         if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
 
-        // 카메라의 전방과 오른쪽 벡터를 기준으로 움직임 방향을 계산합니다.
-        Vector3 forward = cam.transform.forward;
-        Vector3 right = cam.transform.right;
+        Vector3 forward = playerCamera.transform.forward;
+        Vector3 right = playerCamera.transform.right;
         forward.y = 0;
         right.y = 0;
         forward.Normalize();
@@ -61,47 +66,37 @@ public class MovementInput : MonoBehaviour {
         Vector3 moveDirection = forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal");
         controller.Move(moveDirection * Time.deltaTime * moveSpeed);
 
-        // 플레이어가 움직이고 있으면 해당 방향을 바라보게 합니다.
-        if (moveDirection != Vector3.zero)
+        // 왼쪽 쉬프트 키를 눌러 점프합니다.
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), desiredRotationSpeed);
-        }
-
-        // 점프 로직
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
+            Debug.Log("점프!");
             playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
         }
-        else if (Input.GetButtonDown("Jump") && !isGrounded && canDoubleJump)
+        else if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && canDoubleJump)
         {
             playerVelocity.y = Mathf.Sqrt(doubleJumpForce * -3.0f * gravityValue);
             canDoubleJump = false;
         }
 
-        // 중력과 점프를 적용합니다.
         playerVelocity.x = moveDirection.x * moveSpeed;
         playerVelocity.z = moveDirection.z * moveSpeed;
         controller.Move(playerVelocity * Time.deltaTime);
 
-        // 마우스 입력에 따라 카메라 회전
         RotateView();
     }
 
+
+
     private void RotateView()
     {
-        // 마우스 입력에 따라 플레이어를 회전시킵니다.
-        float horizontalRotation = Input.GetAxis("Mouse X") * rotationSpeed;
+        // 마우스 입력에 따라 플레이어를 수평으로 회전시킵니다.
+        float horizontalRotation = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
         transform.Rotate(0, horizontalRotation, 0);
 
         // 카메라 상하 회전 범위를 제한합니다.
-        float verticalRotation = Input.GetAxis("Mouse Y") * rotationSpeed;
+        float verticalRotation = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
         playerCamera.transform.Rotate(-verticalRotation, 0, 0);
-        var angles = playerCamera.transform.localEulerAngles;
-        angles.z = 0;
-        angles.x = (angles.x > 180) ? angles.x - 360 : angles.x;
-        angles.x = Mathf.Clamp(angles.x, -30, 65);
-        playerCamera.transform.localEulerAngles = angles;
+
+        // 카메라 상하 회전 범위를 제한하고, 'z' 회전
     }
-
-
 }
