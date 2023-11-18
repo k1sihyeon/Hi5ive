@@ -1,30 +1,23 @@
 using UnityEngine;
-using TMPro; // TextMeshPro 사용을 위한 네임스페이스
-using System.Collections;
+using TMPro;
 
 public class DialogueSystem : MonoBehaviour
 {
-    public bool dialogueCompleted = false; // 대화 완료 플래그
-    public TextMeshProUGUI dialogueText; // 대화창에 텍스트를 표시할 TextMeshPro UI 요소
-    public string[] dialogueLines; // 대화 내용을 저장할 배열
-    public GameObject dialoguePanel; // 대화창 패널
+    public bool dialogueCompleted = false;
+    public TextMeshProUGUI dialogueText;
+    public string[] dialogueLines;
+    public GameObject dialoguePanel;
 
-    private int currentLine = 0; // 현재 표시하고 있는 대사의 인덱스
-    private int spacePressCount = 0; // 스페이스바 누른 횟수를 추적하는 변수
-    private const int maxSpacePressCount = 5; // 최대 스페이스바 누른 횟수
+    private int currentLine = 0;
+    private const int startLineAtFinal = 4; // "Final" 태그를 가진 땅에 도착했을 때 시작할 대화 줄
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // 스페이스바가 눌리면
+        if (dialogueCompleted) return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            spacePressCount++; // 스페이스바 누른 횟수 증가
-
-            if (spacePressCount > maxSpacePressCount)
-            {
-                return; // 스페이스바를 5번 초과로 눌렀다면 아무 작업도 하지 않음
-            }
-
-            if (!dialoguePanel.activeInHierarchy)
+            if (!dialoguePanel.activeInHierarchy && currentLine < startLineAtFinal)
             {
                 StartDialogue();
             }
@@ -34,37 +27,39 @@ public class DialogueSystem : MonoBehaviour
             }
         }
     }
+
     void Start()
     {
-        dialoguePanel.SetActive(false); // 게임 시작 시 대화창을 숨깁니다.
+        dialoguePanel.SetActive(false);
     }
-
 
     void StartDialogue()
     {
-        dialoguePanel.SetActive(true); // 대화창 패널을 활성화합니다.
-        currentLine = 0; // 대화 인덱스를 초기화합니다.
-        dialogueText.text = dialogueLines[currentLine]; // 첫 번째 대사를 표시합니다.
+        dialoguePanel.SetActive(true);
+        dialogueText.text = dialogueLines[currentLine];
     }
 
     public void ShowNextLine()
     {
-        currentLine++; // 다음 대사의 인덱스로 이동합니다.
-
-        if (currentLine < dialogueLines.Length) // 대화 내용이 더 있다면
+        currentLine++;
+        if (currentLine < dialogueLines.Length && (currentLine < startLineAtFinal || dialogueCompleted))
         {
-            dialogueText.text = dialogueLines[currentLine]; // 다음 대사를 표시합니다.
+            dialogueText.text = dialogueLines[currentLine];
         }
-
         else
-        {
-            dialoguePanel.SetActive(false); // 대화 내용이 더 이상 없으면 대화창을 숨깁니다.
-        }
-
-        if (currentLine >= dialogueLines.Length)
         {
             dialoguePanel.SetActive(false);
             dialogueCompleted = true; // 대화가 완료되었다고 표시
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Final"))
+        {
+            currentLine = startLineAtFinal; // 대화를 4번 요소부터 시작
+            dialogueCompleted = false; // 대화를 다시 활성화
+            StartDialogue(); // 대화 시작
         }
     }
 }
