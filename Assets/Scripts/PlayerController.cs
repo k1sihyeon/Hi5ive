@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerController : NetworkBehaviour
     public float rotationSpeed = 100f;
     public float jumpForce = 10f; // 점프 힘
     private bool isGrounded = true; // 플레이어가 땅에 있는지 여부
+    private bool is_first_jump = true;
     public float playerHeightOffset = 1.15f;
     public float distanceAhead = 1.0f;
 
@@ -108,6 +110,11 @@ public class PlayerController : NetworkBehaviour
                 anim.SetTrigger("jump");
 
             }
+            else if (!isGrounded && is_first_jump && Input.GetKeyDown(KeyCode.Space))
+            {
+                DoubleJump();
+                anim.SetTrigger("double jump");
+            }
 
             InputMagnitude();
         }
@@ -170,7 +177,48 @@ public class PlayerController : NetworkBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         isGrounded = false; // 점프하면 플레이어가 땅에서 떨어집니다.
+        StartCoroutine(jumpcooldown(0.3f));
 
+
+    }
+    private void DoubleJump()
+    {
+        if (is_first_jump)
+        {
+            // 서버에게 이단 점프 이벤트를 전달
+            DoubleJumpServerRpc();
+            is_first_jump = false;
+        }
+    }
+
+    private IEnumerator JumpCooldown(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        is_first_jump = true;
+    }
+
+    [ServerRpc]
+    private void DoubleJumpServerRpc()
+    {
+        // 서버에서 클라이언트로 이단 점프 이벤트를 전달
+        DoubleJumpClientRpc();
+    }
+
+    [ClientRpc]
+    private void DoubleJumpClientRpc()
+    {
+        // 클라이언트에서 이단 점프 구현
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        isGrounded = false;
+    }
+
+    private IEnumerator jumpcooldown(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
+        is_first_jump = true;
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -195,6 +243,7 @@ public class PlayerController : NetworkBehaviour
         if (collision.gameObject.CompareTag("Ground")) // "Ground"는 땅 GameObject의 태그로 변경하세요.
         {
             isGrounded = true;
+            is_first_jump = false;
 
         }
     }
