@@ -8,117 +8,100 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class MovementInput : MonoBehaviour {
 
-    public float Velocity;
-    [Space]
+    public float moveSpeed = 5f;
+    public float jumpForce = 7f; // 점프 힘
+    public float doubleJumpForce = 5f; // 이중 점프 힘
+    private bool isGrounded;
+    private bool canDoubleJump = true;
+    public Camera playerCamera; // 플레이어의 카메라
+    private CharacterController controller;
+    private Animator anim;
 
-	public float InputX;
-	public float InputZ;
-	public Vector3 desiredMoveDirection;
-	public bool blockRotationPlayer;
-	public float desiredRotationSpeed = 0.1f;
-	public Animator anim;
-	public float Speed;
-	public float allowPlayerRotation = 0.1f;
-	public Camera cam;
-	public CharacterController controller;
-	public bool isGrounded;
+    private Vector3 playerVelocity;
+    private float gravityValue = -9.81f; // 중력 값
 
-    [Header("Animation Smoothing")]
-    [Range(0, 1f)]
-    public float HorizontalAnimSmoothTime = 0.2f;
-    [Range(0, 1f)]
-    public float VerticalAnimTime = 0.2f;
-    [Range(0,1f)]
-    public float StartAnimTime = 0.3f;
-    [Range(0, 1f)]
-    public float StopAnimTime = 0.15f;
+    private void Start()
+    {
+        controller = GetComponent<CharacterController>();
+        anim = GetComponent<Animator>();
+        // 카메라를 플레이어의 자식으로 설정합니다.
+        playerCamera.transform.SetParent(transform);
+        // 카메라를 머리 위치로 설정합니다.
+        playerCamera.transform.localPosition = new Vector3(0, 1.6f, 0);
+        playerCamera.transform.localRotation = Quaternion.identity;
+    }
 
-    public float verticalVel;
-    private Vector3 moveVector;
-
-	// Use this for initialization
-	void Start () {
-		anim = this.GetComponent<Animator> ();
-		cam = Camera.main;
-		controller = this.GetComponent<CharacterController> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		InputMagnitude ();
-
+    private void Update()
+    {
         isGrounded = controller.isGrounded;
         if (isGrounded)
         {
-            verticalVel -= 0;
+            playerVelocity.y = 0f;
+            canDoubleJump = true;
         }
         else
         {
-            verticalVel -= 1;
+            playerVelocity.y += gravityValue * Time.deltaTime; // 중력 적용
         }
-        moveVector = new Vector3(0, verticalVel * .2f * Time.deltaTime, 0);
-        controller.Move(moveVector);
 
+        // 바닥에 닿았는지 확인합니다.
+        if (isGrounded && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+        }
 
+        // 카메라의 전방과 오른쪽 벡터를 기준으로 움직임 방향을 계산합니다.
+        Vector3 forward = cam.transform.forward;
+        Vector3 right = cam.transform.right;
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+
+        Vector3 moveDirection = forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal");
+        controller.Move(moveDirection * Time.deltaTime * moveSpeed);
+
+        // 플레이어가 움직이고 있으면 해당 방향을 바라보게 합니다.
+        if (moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), desiredRotationSpeed);
+        }
+
+        // 점프 로직
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
+        }
+        else if (Input.GetButtonDown("Jump") && !isGrounded && canDoubleJump)
+        {
+            playerVelocity.y = Mathf.Sqrt(doubleJumpForce * -3.0f * gravityValue);
+            canDoubleJump = false;
+        }
+
+        // 중력과 점프를 적용합니다.
+        playerVelocity.x = moveDirection.x * moveSpeed;
+        playerVelocity.z = moveDirection.z * moveSpeed;
+        controller.Move(playerVelocity * Time.deltaTime);
+
+        // 마우스 입력에 따라 카메라 회전
+        RotateView();
     }
 
-    void PlayerMoveAndRotation() {
-		InputX = Input.GetAxis ("Horizontal");
-		InputZ = Input.GetAxis ("Vertical");
-
-		var camera = Camera.main;
-		var forward = cam.transform.forward;
-		var right = cam.transform.right;
-
-		forward.y = 0f;
-		right.y = 0f;
-
-		forward.Normalize ();
-		right.Normalize ();
-
-		desiredMoveDirection = forward * InputZ + right * InputX;
-
-		if (blockRotationPlayer == false) {
-			transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.LookRotation (desiredMoveDirection), desiredRotationSpeed);
-            controller.Move(desiredMoveDirection * Time.deltaTime * Velocity);
-		}
-	}
-
-    public void LookAt(Vector3 pos)
+    private void RotateView()
     {
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), desiredRotationSpeed);
+        // 마우스 입력에 따라 플레이어를 회전시킵니다.
+        float horizontalRotation = Input.GetAxis("Mouse X") * rotationSpeed;
+        transform.Rotate(0, horizontalRotation, 0);
+
+        // 카메라 상하 회전 범위를 제한합니다.
+        float verticalRotation = Input.GetAxis("Mouse Y") * rotationSpeed;
+        playerCamera.transform.Rotate(-verticalRotation, 0, 0);
+        var angles = playerCamera.transform.localEulerAngles;
+        angles.z = 0;
+        angles.x = (angles.x > 180) ? angles.x - 360 : angles.x;
+        angles.x = Mathf.Clamp(angles.x, -30, 65);
+        playerCamera.transform.localEulerAngles = angles;
     }
 
-    public void RotateToCamera(Transform t)
-    {
 
-        var camera = Camera.main;
-        var forward = cam.transform.forward;
-        var right = cam.transform.right;
-
-        desiredMoveDirection = forward;
-
-        t.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
-    }
-
-	void InputMagnitude() {
-		//Calculate Input Vectors
-		InputX = Input.GetAxis ("Horizontal");
-		InputZ = Input.GetAxis ("Vertical");
-
-		//anim.SetFloat ("InputZ", InputZ, VerticalAnimTime, Time.deltaTime * 2f);
-		//anim.SetFloat ("InputX", InputX, HorizontalAnimSmoothTime, Time.deltaTime * 2f);
-
-		//Calculate the Input Magnitude
-		Speed = new Vector2(InputX, InputZ).sqrMagnitude;
-
-        //Physically move player
-
-		if (Speed > allowPlayerRotation) {
-			anim.SetFloat ("Blend", Speed, StartAnimTime, Time.deltaTime);
-			PlayerMoveAndRotation ();
-		} else if (Speed < allowPlayerRotation) {
-			anim.SetFloat ("Blend", Speed, StopAnimTime, Time.deltaTime);
-		}
-	}
 }
