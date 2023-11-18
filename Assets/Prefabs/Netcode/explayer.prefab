@@ -2007,6 +2007,7 @@ GameObject:
   - component: {fileID: 1971641010945288507}
   - component: {fileID: 1971641010945288504}
   - component: {fileID: 1250932885410853926}
+  - component: {fileID: -6524043538347173939}
   m_Layer: 6
   m_Name: explayer
   m_TagString: Player
@@ -2140,7 +2141,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &2125441266827704300
 BoxCollider:
@@ -2151,7 +2152,7 @@ BoxCollider:
   m_GameObject: {fileID: 1971641010945288505}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.70369446, y: 1.5064245, z: 0.5967652}
   m_Center: {x: -0.012538492, y: 0.76269084, z: 0.012920871}
@@ -2221,6 +2222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1971641010945288506}
+  currentEnergy: 0
 --- !u!114 &1971641010945288504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2256,6 +2258,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd7a2ffbfb797441aef471297ee2c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &-6524043538347173939
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971641010945288505}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1971641010971827478
 GameObject:
   m_ObjectHideFlags: 0
