@@ -15,13 +15,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Stage1TestingScene.unity
     guid: 1a188793436d37e4e9b0b98b9e4091c2
   - enabled: 1
-    path: Assets/Scenes/NetcodeTestingScene.unity
+    path: Assets/Scenes/Unused/NetcodeTestingScene.unity
     guid: 0839aa4d285413a48af356e0d07a491e
   - enabled: 0
-    path: Assets/Scenes/SelectStage.unity
+    path: Assets/Scenes/Unused/SelectStage.unity
     guid: 0708c8ee351d87349838565c288d4060
   - enabled: 0
-    path: Assets/Scenes/practice Scene.unity
+    path: Assets/Scenes/Unused/practice Scene.unity
     guid: 72649fead98efbd4495c8c06e854296a
   - enabled: 0
     path: Assets/Scenes/TutorialScene.unity
