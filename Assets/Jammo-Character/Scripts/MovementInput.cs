@@ -39,50 +39,53 @@ public class MovementInput : MonoBehaviour
     {
         // 대화 시스템이 완료되었는지 확인
         if (dialogueSystem && !dialogueSystem.dialogueCompleted) return;
-
-        isGrounded = controller.isGrounded;
-        if (isGrounded)
+        if (dialogueSystem.dialogueCompleted)
         {
-            playerVelocity.y = 0f;
-            canDoubleJump = true;
+            isGrounded = controller.isGrounded;
+            if (isGrounded)
+            {
+                playerVelocity.y = 0f;
+                canDoubleJump = true;
+            }
+            else
+            {
+                playerVelocity.y += gravityValue * Time.deltaTime;
+            }
+
+            if (isGrounded && playerVelocity.y < 0)
+            {
+                playerVelocity.y = 0f;
+            }
+
+            Vector3 forward = playerCamera.transform.forward;
+            Vector3 right = playerCamera.transform.right;
+            forward.y = 0;
+            right.y = 0;
+            forward.Normalize();
+            right.Normalize();
+
+            Vector3 moveDirection = forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal");
+            controller.Move(moveDirection * Time.deltaTime * moveSpeed);
+
+            // 왼쪽 쉬프트 키를 눌러 점프합니다.
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                Debug.Log("점프!");
+                playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
+            }
+            else if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && canDoubleJump)
+            {
+                playerVelocity.y = Mathf.Sqrt(doubleJumpForce * -3.0f * gravityValue);
+                canDoubleJump = false;
+            }
+
+            playerVelocity.x = moveDirection.x * moveSpeed;
+            playerVelocity.z = moveDirection.z * moveSpeed;
+            controller.Move(playerVelocity * Time.deltaTime);
+
+            RotateView();
         }
-        else
-        {
-            playerVelocity.y += gravityValue * Time.deltaTime;
-        }
 
-        if (isGrounded && playerVelocity.y < 0)
-        {
-            playerVelocity.y = 0f;
-        }
-
-        Vector3 forward = playerCamera.transform.forward;
-        Vector3 right = playerCamera.transform.right;
-        forward.y = 0;
-        right.y = 0;
-        forward.Normalize();
-        right.Normalize();
-
-        Vector3 moveDirection = forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal");
-        controller.Move(moveDirection * Time.deltaTime * moveSpeed);
-
-        // 왼쪽 쉬프트 키를 눌러 점프합니다.
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            Debug.Log("점프!");
-            playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
-        }
-        else if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && canDoubleJump)
-        {
-            playerVelocity.y = Mathf.Sqrt(doubleJumpForce * -3.0f * gravityValue);
-            canDoubleJump = false;
-        }
-
-        playerVelocity.x = moveDirection.x * moveSpeed;
-        playerVelocity.z = moveDirection.z * moveSpeed;
-        controller.Move(playerVelocity * Time.deltaTime);
-
-        RotateView();
     }
 
 

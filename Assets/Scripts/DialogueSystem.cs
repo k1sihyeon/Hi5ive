@@ -7,19 +7,38 @@ public class DialogueSystem : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     public string[] dialogueLines;
     public GameObject dialoguePanel;
+    public Transform cameraTransform; // 카메라 Transform
 
     private int currentLine = 0;
-    private const int startLineAtFinal = 4; // "Final" 태그를 가진 땅에 도착했을 때 시작할 대화 줄
+    private bool isNearNPC = false; // NPC 근처에 있는지 여부
+
+    void Start()
+    {
+        dialoguePanel.SetActive(true); // 시작 시 대화창 활성화
+        dialogueText.text = dialogueLines[currentLine]; // 첫 대화 텍스트 설정
+    }
 
     void Update()
     {
         if (dialogueCompleted) return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 기본 대화 진행
+        if (Input.GetKeyDown(KeyCode.Space) && currentLine < 4)
         {
-            if (!dialoguePanel.activeInHierarchy && currentLine < startLineAtFinal)
+            ShowNextLine();
+            if (currentLine == 4)
             {
-                StartDialogue();
+                dialoguePanel.SetActive(false);
+                dialogueCompleted = true;
+            }
+        }
+
+        // NPC와 상호작용 시 대화 재개
+        if (isNearNPC && Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!dialoguePanel.activeInHierarchy)
+            {
+                StartDialogueFromFinal();
             }
             else
             {
@@ -28,38 +47,50 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    void Start()
+    void StartDialogueFromFinal()
     {
-        dialoguePanel.SetActive(false);
-    }
-
-    void StartDialogue()
-    {
+        dialogueCompleted = false;
+        currentLine = 4;
         dialoguePanel.SetActive(true);
         dialogueText.text = dialogueLines[currentLine];
+        AdjustCameraAngle();
+    }
+
+    void AdjustCameraAngle()
+    {
+        if (cameraTransform != null)
+        {
+            cameraTransform.localEulerAngles += new Vector3(-10f, 0f, 0f);
+        }
     }
 
     public void ShowNextLine()
     {
         currentLine++;
-        if (currentLine < dialogueLines.Length && (currentLine < startLineAtFinal || dialogueCompleted))
+        if (currentLine < dialogueLines.Length)
         {
             dialogueText.text = dialogueLines[currentLine];
         }
         else
         {
             dialoguePanel.SetActive(false);
-            dialogueCompleted = true; // 대화가 완료되었다고 표시
+            dialogueCompleted = true; // 대화 완료 플래그 설정
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Final"))
+        if (other.gameObject.CompareTag("NPC"))
         {
-            currentLine = startLineAtFinal; // 대화를 4번 요소부터 시작
-            dialogueCompleted = false; // 대화를 다시 활성화
-            StartDialogue(); // 대화 시작
+            isNearNPC = true; // NPC 근처에 있다고 표시
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("NPC"))
+        {
+            isNearNPC = false; // NPC 근처에서 벗어났다고 표시
         }
     }
 }

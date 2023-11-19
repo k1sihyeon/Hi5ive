@@ -13,6 +13,7 @@ TagManager:
   - PlayerEyes
   - EndPoint
   - Super_SpeedUp
+  - NPC
   layers:
   - Default
   - TransparentFX
