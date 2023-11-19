@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement; // 추가된 네임스페이스
 
 public class NPCDialog : MonoBehaviour
 {
@@ -10,19 +11,18 @@ public class NPCDialog : MonoBehaviour
     public GameObject dialoguePanel;
     public Transform cameraTransform;
 
-    // 인스펙터에서 할당할 수 있는 NPC 오브젝트 배열
     public GameObject[] npcObjects;
 
     private int currentLine = 0;
     private bool isNearNPC = false;
-    private MovementInput playerMovement; // 플레이어 움직임 스크립트의 참조
-
+    private MovementInput playerMovement;
 
     private void Start()
     {
         dialoguePanel.SetActive(false);
-        playerMovement = FindObjectOfType<MovementInput>(); // 플레이어 움직임 스크립트 찾기
+        playerMovement = FindObjectOfType<MovementInput>();
     }
+
     void Update()
     {
         if (isNearNPC && Input.GetKeyDown(KeyCode.Space))
@@ -37,7 +37,6 @@ public class NPCDialog : MonoBehaviour
                 ShowNextLine();
             }
         }
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -47,7 +46,7 @@ public class NPCDialog : MonoBehaviour
             Debug.Log("npc 주위에 있음");
             isNearNPC = true;
             AdjustCameraAngle();
-            if (playerMovement != null) playerMovement.canMove = false; // 움직임 비활성화
+            if (playerMovement != null) playerMovement.canMove = false;
         }
     }
 
@@ -56,15 +55,8 @@ public class NPCDialog : MonoBehaviour
         if (System.Array.Exists(npcObjects, npc => npc == other.gameObject))
         {
             isNearNPC = false;
-            if (playerMovement != null) playerMovement.canMove = true; // 움직임 활성화
+            if (playerMovement != null) playerMovement.canMove = true;
         }
-    }
-
-    private void EndDialogue()
-    {
-        dialoguePanel.SetActive(false);
-        currentLine = 0;
-        if (playerMovement != null) playerMovement.canMove = true; // 대화가 끝나면 움직임 활성화
     }
 
     private void StartDialogue()
@@ -85,6 +77,16 @@ public class NPCDialog : MonoBehaviour
         {
             EndDialogue();
         }
+    }
+
+    private void EndDialogue()
+    {
+        dialoguePanel.SetActive(false);
+        currentLine = 0;
+        if (playerMovement != null) playerMovement.canMove = true;
+
+        // "LobbyScene"으로 씬 전환
+        SceneManager.LoadScene("LobbyScene");
     }
 
     private void AdjustCameraAngle()
