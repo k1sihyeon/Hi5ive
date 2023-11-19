@@ -10,7 +10,6 @@ public class DialogueSystem : MonoBehaviour
     public Transform cameraTransform; // 카메라 Transform
 
     private int currentLine = 0;
-    private bool isNearNPC = false; // NPC 근처에 있는지 여부
 
     void Start()
     {
@@ -32,36 +31,6 @@ public class DialogueSystem : MonoBehaviour
                 dialogueCompleted = true;
             }
         }
-
-        // NPC와 상호작용 시 대화 재개
-        if (isNearNPC && Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!dialoguePanel.activeInHierarchy)
-            {
-                StartDialogueFromFinal();
-            }
-            else
-            {
-                ShowNextLine();
-            }
-        }
-    }
-
-    void StartDialogueFromFinal()
-    {
-        dialogueCompleted = false;
-        currentLine = 4;
-        dialoguePanel.SetActive(true);
-        dialogueText.text = dialogueLines[currentLine];
-        AdjustCameraAngle();
-    }
-
-    void AdjustCameraAngle()
-    {
-        if (cameraTransform != null)
-        {
-            cameraTransform.localEulerAngles += new Vector3(-10f, 0f, 0f);
-        }
     }
 
     public void ShowNextLine()
@@ -75,22 +44,6 @@ public class DialogueSystem : MonoBehaviour
         {
             dialoguePanel.SetActive(false);
             dialogueCompleted = true; // 대화 완료 플래그 설정
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("NPC"))
-        {
-            isNearNPC = true; // NPC 근처에 있다고 표시
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("NPC"))
-        {
-            isNearNPC = false; // NPC 근처에서 벗어났다고 표시
         }
     }
 }

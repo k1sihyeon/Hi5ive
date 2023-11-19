@@ -10,15 +10,23 @@ public class NPCDialog : MonoBehaviour
     public GameObject dialoguePanel;
     public Transform cameraTransform;
 
+    // 인스펙터에서 할당할 수 있는 NPC 오브젝트 배열
+    public GameObject[] npcObjects;
+
     private int currentLine = 0;
     private bool isNearNPC = false;
 
+    private void Start()
+    {
+        dialoguePanel.SetActive(false);
+    }
     void Update()
     {
         if (isNearNPC && Input.GetKeyDown(KeyCode.Space))
         {
             if (!dialoguePanel.activeSelf)
             {
+                dialoguePanel.SetActive(true);
                 StartDialogue();
             }
             else
@@ -30,8 +38,8 @@ public class NPCDialog : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger entered: " + other.gameObject.name); // 디버깅
-        if (other.gameObject.CompareTag("NPC"))
+        // npcObjects 배열에 있는지 확인
+        if (System.Array.Exists(npcObjects, npc => npc == other.gameObject))
         {
             isNearNPC = true;
             AdjustCameraAngle();
@@ -40,7 +48,7 @@ public class NPCDialog : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("NPC"))
+        if (System.Array.Exists(npcObjects, npc => npc == other.gameObject))
         {
             isNearNPC = false;
         }
@@ -48,12 +56,12 @@ public class NPCDialog : MonoBehaviour
 
     private void StartDialogue()
     {
-        currentLine = 4; // Element 4부터 시작 (인덱스는 0부터 시작하므로 3으로 설정)
+        currentLine = 0;
         dialoguePanel.SetActive(true);
         dialogueText.text = dialogueLines[currentLine];
     }
 
-    public void ShowNextLine()
+    private void ShowNextLine()
     {
         currentLine++;
         if (currentLine < dialogueLines.Length)
@@ -69,7 +77,7 @@ public class NPCDialog : MonoBehaviour
     private void EndDialogue()
     {
         dialoguePanel.SetActive(false);
-        currentLine = 4; // 대화를 다시 시작할 때 Element 4부터 시작하도록 설정
+        currentLine = 0;
     }
 
     private void AdjustCameraAngle()
