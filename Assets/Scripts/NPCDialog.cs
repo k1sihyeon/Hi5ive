@@ -15,10 +15,13 @@ public class NPCDialog : MonoBehaviour
 
     private int currentLine = 0;
     private bool isNearNPC = false;
+    private MovementInput playerMovement; // 플레이어 움직임 스크립트의 참조
+
 
     private void Start()
     {
         dialoguePanel.SetActive(false);
+        playerMovement = FindObjectOfType<MovementInput>(); // 플레이어 움직임 스크립트 찾기
     }
     void Update()
     {
@@ -34,15 +37,17 @@ public class NPCDialog : MonoBehaviour
                 ShowNextLine();
             }
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // npcObjects 배열에 있는지 확인
         if (System.Array.Exists(npcObjects, npc => npc == other.gameObject))
         {
+            Debug.Log("npc 주위에 있음");
             isNearNPC = true;
             AdjustCameraAngle();
+            if (playerMovement != null) playerMovement.canMove = false; // 움직임 비활성화
         }
     }
 
@@ -51,7 +56,15 @@ public class NPCDialog : MonoBehaviour
         if (System.Array.Exists(npcObjects, npc => npc == other.gameObject))
         {
             isNearNPC = false;
+            if (playerMovement != null) playerMovement.canMove = true; // 움직임 활성화
         }
+    }
+
+    private void EndDialogue()
+    {
+        dialoguePanel.SetActive(false);
+        currentLine = 0;
+        if (playerMovement != null) playerMovement.canMove = true; // 대화가 끝나면 움직임 활성화
     }
 
     private void StartDialogue()
@@ -72,12 +85,6 @@ public class NPCDialog : MonoBehaviour
         {
             EndDialogue();
         }
-    }
-
-    private void EndDialogue()
-    {
-        dialoguePanel.SetActive(false);
-        currentLine = 0;
     }
 
     private void AdjustCameraAngle()

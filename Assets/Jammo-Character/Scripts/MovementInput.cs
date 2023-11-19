@@ -16,6 +16,7 @@ public class MovementInput : MonoBehaviour
     public Camera playerCamera; // 플레이어의 카메라
     private CharacterController controller;
     private Animator anim;
+    public bool canMove = true; // 플레이어의 움직임을 제어할 변수 추가
 
     private Vector3 playerVelocity;
     private float gravityValue = -9.81f; // 중력 값
@@ -85,6 +86,9 @@ public class MovementInput : MonoBehaviour
 
             RotateView();
         }
+        // MovementInput 스크립트의 Update 메서드 내에
+        if (!canMove) return; // canMove가 false이면 움직임과 점프 처리를 하지 않음
+
 
     }
 
