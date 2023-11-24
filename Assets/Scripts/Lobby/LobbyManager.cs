@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +16,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private TMP_Dropdown localDD;
     [SerializeField] private TMP_Dropdown hostDD;
 
+    [SerializeField] private TMP_Text ipText;
     [SerializeField] private Button hostBtn;
 
     [SerializeField] private TMP_Text popupText;
@@ -93,9 +96,19 @@ public class LobbyManager : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         popup.SetActive(false);
+        ipText.text = "";
+
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList) {
+
+            if (ip.AddressFamily == AddressFamily.InterNetwork) {
+                ipText.text += (ip.ToString() + "\n");
+                Debug.Log("IP Address = " + ip.ToString());
+            }
+
+        }
     }
 
     // Update is called once per frame

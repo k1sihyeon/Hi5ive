@@ -2271,7 +2271,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f68ac32522820246bd7433091f56b85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rankText: {fileID: 0}
   rank: 0
 --- !u!136 &-6524043538347173939
 CapsuleCollider:
