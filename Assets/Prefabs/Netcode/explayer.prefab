@@ -1452,7 +1452,9 @@ GameObject:
   - component: {fileID: 1971641010712005900}
   - component: {fileID: 1971641010712005901}
   - component: {fileID: 1971641010712005898}
-  m_Layer: 6
+  - component: {fileID: 3560450053625893988}
+  - component: {fileID: 4229309165242187738}
+  m_Layer: 20
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1558,6 +1560,36 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &3560450053625893988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971641010712005896}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  priority: 0
+  blendDistance: 4
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: fcca1373cc83b8546bef7234f01ffd7b, type: 2}
+--- !u!65 &4229309165242187738
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971641010712005896}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1971641010714011756
 GameObject:
   m_ObjectHideFlags: 0
@@ -2153,7 +2185,7 @@ BoxCollider:
   m_GameObject: {fileID: 1971641010945288505}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.70369446, y: 1.5064245, z: 0.5967652}
   m_Center: {x: -0.012538492, y: 0.76269084, z: 0.012920871}
@@ -2271,6 +2303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f68ac32522820246bd7433091f56b85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  observePoint: {x: 15, y: 25, z: -207}
+  startPoint: {x: 185, y: -2, z: 290}
   rank: 0
 --- !u!136 &-6524043538347173939
 CapsuleCollider:
