@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: explayer Profile
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 7933075634619173159}
---- !u!114 &7933075634619173159
+  - {fileID: 5020786995917821562}
+--- !u!114 &5020786995917821562
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28,14 +28,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   mode:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
   quality:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.3
   clamp:
     m_OverrideState: 1
     m_Value: 0.05
