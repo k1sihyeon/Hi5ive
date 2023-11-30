@@ -4,15 +4,46 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class TimeManager : NetworkBehaviour {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+
+    private float startCountdown = 30f;
+    private bool isStart = false;
+
+    void Start() {
+        if (IsServer) {
+
+        }
+
+        else if (IsClient) {
+
+        }
+
+        UIController.instance.EnableCountdown();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void FixedUpdate() {
+        if (!isStart) {
+
+            if (IsServer) {
+                startCountdown -= Time.deltaTime;
+                SendTimeClientRpc(startCountdown);
+
+                if(startCountdown <= 0) {
+                    UIController.instance.DisableCountdown();
+                    isStart = true;
+                }
+            }
+
+            UIController.instance.UpdateCountdown(startCountdown);
+
+        }
+    }
+
+    void Update() {
+
+    }
+
+    [ClientRpc]
+    private void SendTimeClientRpc(float time) {
+        startCountdown = time;
     }
 }

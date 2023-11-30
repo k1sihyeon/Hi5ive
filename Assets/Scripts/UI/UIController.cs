@@ -8,6 +8,7 @@ public class UIController : MonoBehaviour {
 
     [SerializeField] private Slider UltimateBarSlider;
     [SerializeField] private TMP_Text rankText;
+    [SerializeField] private TMP_Text countDownText;
 
     public static UIController instance;
     public float ultVal = 0f;
@@ -31,6 +32,18 @@ public class UIController : MonoBehaviour {
         rankText.text = $"{val}등 입니다!!";
         rankText.gameObject.SetActive(true);
 
+    }
+
+    public void EnableCountdown() {
+        countDownText.gameObject.SetActive(true);
+    }
+
+    public void DisableCountdown() {
+        countDownText.gameObject.SetActive(false);
+    }
+
+    public void UpdateCountdown(float time) {
+        countDownText.text = time.ToString();
     }
 
     void UpdateEnergyUI(float value) {

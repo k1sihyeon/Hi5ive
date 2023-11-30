@@ -18,7 +18,9 @@ public class PlayerCollision : NetworkBehaviour {
     }
 
     public PlayerController player;
-    public Volume volume;
+    private Volume volume;
+    private ChromaticAberration aberration;
+    private Camera playerCamera;
 
     private float maxEnergy = 100f;
     private float energyIncreaseRate = 10f;
@@ -35,7 +37,23 @@ public class PlayerCollision : NetworkBehaviour {
             UpdateEnergyClientRpc(currentEnergy);
         }
 
-        volume = gameObject.GetComponentInChildren<Camera>().GetComponent<Volume>();
+        player = GetComponent<PlayerController>();
+        playerCamera = GetComponentInChildren<Camera>();
+        if (playerCamera != null) {
+            volume = playerCamera.GetComponent<Volume>();
+
+            if (volume != null ) {
+                volume.profile.TryGet(out aberration);
+            }
+            else {
+                Debug.LogError("Volume 컴포넌트를 찾을 수 없음");
+            }
+        }
+        else {
+            Debug.LogError("플레이어 자식 카메라를 찾을 수 없음");
+        }
+
+     
     }
 
     private void Update()
@@ -65,10 +83,11 @@ public class PlayerCollision : NetworkBehaviour {
         ignoringCollisions = true;
         gameObject.layer = Layer.PLAYER_ULTIMATE_LAYER; //충돌처리 꺼진 레이어로 변경
 
+        PlayerController.instance.moveSpeed = 15f;
         UpdatePlayerSpeedClientRpc(15f);
 
         //intensity
-        volume.profile.GetComponent<ChromaticAberration>().intensity = new ClampedFloatParameter(0.8f, 0, 1);
+        aberration.intensity.value = 0.8f;
 
         Invoke("OffUltimate", 3);
     }
@@ -77,10 +96,11 @@ public class PlayerCollision : NetworkBehaviour {
         Debug.Log("Off Ultimate");
         gameObject.layer = Layer.PLAYER_LAYER; //원래 레이러로 복구
 
+        PlayerController.instance.moveSpeed = 5f;
         UpdatePlayerSpeedClientRpc(5f);
 
         //int
-        volume.profile.GetComponent<ChromaticAberration>().intensity = new ClampedFloatParameter(0f, 0, 1);
+        aberration.intensity.value = 0f;
 
         ignoringCollisions = false;
     }
