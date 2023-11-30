@@ -6,6 +6,8 @@ public class PlayerController : NetworkBehaviour
 {
     public static PlayerController instance;
 
+    public bool ignoringInputs = false;
+
     public float moveSpeed = 7f;
     public float rotationSpeed = 100f;
     public float jumpForce = 6f; // 점프 힘
@@ -84,56 +86,65 @@ public class PlayerController : NetworkBehaviour
         if (!IsClient)
             return;
 
-        if (IsLocalPlayer)
-        {
-            playerRenderer = GetComponent<Renderer>();
-            // Input 처리
-            moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-            rotationInput = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+        if (!ignoringInputs) { //입력 무시 상태가 아니면
 
-            // 회전 입력을 적용
-            Rotate(rotationInput);
+            if (IsLocalPlayer) {
+                playerRenderer = GetComponent<Renderer>();
+                // Input 처리
+                moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+                rotationInput = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
-            // 이동 입력을 회전에 맞게 수정
-            moveInput = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * moveInput;
+                // 회전 입력을 적용
+                Rotate(rotationInput);
 
-            // 클라이언트 또는 호스트 플레이어일 때, 메인 카메라를 플레이어에게 고정
-           /* Vector3 playerTopPosition = transform.position + Vector3.up * playerHeightOffset;
-            playerTopPosition = playerTopPosition + Vector3.forward * distanceAhead;
-            playerCameraTransform.position = playerTopPosition;
-            playerCameraTransform.rotation = transform.rotation;*/
-           
-            // 점프 처리
-            if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-            {
-                Jump();
-                anim.SetTrigger("jump");
+                // 이동 입력을 회전에 맞게 수정
+                moveInput = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * moveInput;
 
+                // 클라이언트 또는 호스트 플레이어일 때, 메인 카메라를 플레이어에게 고정
+                /* Vector3 playerTopPosition = transform.position + Vector3.up * playerHeightOffset;
+                 playerTopPosition = playerTopPosition + Vector3.forward * distanceAhead;
+                 playerCameraTransform.position = playerTopPosition;
+                 playerCameraTransform.rotation = transform.rotation;*/
+
+                // 점프 처리
+                if (isGrounded && Input.GetKeyDown(KeyCode.Space)) {
+                    Jump();
+                    anim.SetTrigger("jump");
+
+                }
+                else if (!isGrounded && is_first_jump && Input.GetKeyDown(KeyCode.Space)) {
+                    DoubleJump();
+                    anim.SetTrigger("double jump");
+                }
+
+                InputMagnitude();
             }
-            else if (!isGrounded && is_first_jump && Input.GetKeyDown(KeyCode.Space))
-            {
-                DoubleJump();
-                anim.SetTrigger("double jump");
+            else {
+                //Destroy(GetComponentInChildren<Camera>().gameObject);
             }
 
-            InputMagnitude();
-        }
-        else
-        {
-            //Destroy(GetComponentInChildren<Camera>().gameObject);
-        }
+            // 서버로 이동 정보 보내기
+            if (IsServer) {
+                SendMovementDataServerRpc(moveInput);
+            }
 
-        // 서버로 이동 정보 보내기
-        if (IsServer)
-        {            
-            SendMovementDataServerRpc(moveInput);
-        }
+            // 클라이언트에서 이동 및 회전 적용
+            if (!IsServer) {
+                Move(moveInput);
+            }
 
-        // 클라이언트에서 이동 및 회전 적용
-        if (!IsServer)
-        {
-            Move(moveInput);
         }
+        
+    }
+
+    public void UpdateIgnoringInputs(bool value) {
+        ignoringInputs = value;
+        UpdateIgnoringInputsClientRpc(value);
+    }
+
+    [ClientRpc]
+    private void UpdateIgnoringInputsClientRpc(bool value) {
+        ignoringInputs = value;
     }
 
     void InputMagnitude()

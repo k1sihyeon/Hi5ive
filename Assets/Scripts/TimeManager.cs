@@ -5,23 +5,18 @@ using UnityEngine;
 
 public class TimeManager : NetworkBehaviour {
 
-    private float startCountdown = 30f;
+    [SerializeField] private float startCountdown = 10f;
     private bool isStart = false;
 
     void Start() {
-        if (IsServer) {
-
-        }
-
-        else if (IsClient) {
-
-        }
-
         UIController.instance.EnableCountdown();
+        //PlayerController.instance.ignoringInputs = true;
+        //플레이어가 더 늦게 생성되므로 실행 x
     }
 
     private void FixedUpdate() {
         if (!isStart) {
+            PlayerController.instance.UpdateIgnoringInputs(true);
 
             if (IsServer) {
                 startCountdown -= Time.deltaTime;
@@ -31,15 +26,11 @@ public class TimeManager : NetworkBehaviour {
             if (startCountdown <= 0) {
                 UIController.instance.DisableCountdown();
                 isStart = true;
+                PlayerController.instance.UpdateIgnoringInputs(false);
             }
 
             UIController.instance.UpdateCountdown(startCountdown);
-
         }
-    }
-
-    void Update() {
-
     }
 
     [ClientRpc]
