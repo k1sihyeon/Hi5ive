@@ -26,11 +26,11 @@ public class TimeManager : NetworkBehaviour {
             if (IsServer) {
                 startCountdown -= Time.deltaTime;
                 SendTimeClientRpc(startCountdown);
+            }
 
-                if(startCountdown <= 0) {
-                    UIController.instance.DisableCountdown();
-                    isStart = true;
-                }
+            if (startCountdown <= 0) {
+                UIController.instance.DisableCountdown();
+                isStart = true;
             }
 
             UIController.instance.UpdateCountdown(startCountdown);

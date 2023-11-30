@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,7 +45,7 @@ public class UIController : MonoBehaviour {
     }
 
     public void UpdateCountdown(float time) {
-        countDownText.text = time.ToString();
+        countDownText.text = Math.Round(time, 2).ToString();
     }
 
     void UpdateEnergyUI(float value) {
