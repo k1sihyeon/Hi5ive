@@ -3,34 +3,29 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 
 
 public class PlayerCollision : NetworkBehaviour {
 
-    public static PlayerCollision instance;
-
-    public PlayerController player;
     static class Layer {
         public const short PLAYER_LAYER = 6;
         public const short PLAYER_ULTIMATE_LAYER = 7;
         public const short OBSTACLE_LAYER = 8;
     }
 
+    public PlayerController player;
+    public Volume volume;
+
     private float maxEnergy = 100f;
     private float energyIncreaseRate = 10f;
     [SerializeField] private float currentEnergy = 0f;
-
     private float collisionIgnoreTime = 5f;
     private bool ignoringCollisions = false;
 
-    private void Awake() {
-        if (PlayerCollision.instance == null) {
-            PlayerCollision.instance = this;
-        }
-        
-    }
 
     private void Start() {
         if (IsServer) {
@@ -39,6 +34,8 @@ public class PlayerCollision : NetworkBehaviour {
         else {
             UpdateEnergyClientRpc(currentEnergy);
         }
+
+        volume = gameObject.GetComponentInChildren<Camera>().GetComponent<Volume>();
     }
 
     private void Update()
@@ -67,11 +64,11 @@ public class PlayerCollision : NetworkBehaviour {
 
         ignoringCollisions = true;
         gameObject.layer = Layer.PLAYER_ULTIMATE_LAYER; //충돌처리 꺼진 레이어로 변경
-        //gameObject.GetComponent<Collider>().enabled = false;
 
-        PlayerController.instance.moveSpeed = 15f;
         UpdatePlayerSpeedClientRpc(15f);
-        //instance문 멀티에서 동작 x => controller, collision 통합 필요
+
+        //intensity
+        volume.profile.GetComponent<ChromaticAberration>().intensity = new ClampedFloatParameter(0.8f, 0, 1);
 
         Invoke("OffUltimate", 3);
     }
@@ -79,10 +76,11 @@ public class PlayerCollision : NetworkBehaviour {
     void OffUltimate() {
         Debug.Log("Off Ultimate");
         gameObject.layer = Layer.PLAYER_LAYER; //원래 레이러로 복구
-        //gameObject.GetComponent<Collider>().enabled = true;
 
-        PlayerController.instance.moveSpeed = 5f;
         UpdatePlayerSpeedClientRpc(5f);
+
+        //int
+        volume.profile.GetComponent<ChromaticAberration>().intensity = new ClampedFloatParameter(0f, 0, 1);
 
         ignoringCollisions = false;
     }
