@@ -17,7 +17,7 @@ public class PlayerCollision : NetworkBehaviour {
         public const short OBSTACLE_LAYER = 8;
     }
 
-    public PlayerController player;
+    private PlayerController player;
     private Volume volume;
     private ChromaticAberration aberration;
     private Camera playerCamera;

@@ -137,16 +137,6 @@ public class PlayerController : NetworkBehaviour
         
     }
 
-    public void UpdateIgnoringInputs(bool value) {
-        ignoringInputs = value;
-        UpdateIgnoringInputsClientRpc(value);
-    }
-
-    [ClientRpc]
-    private void UpdateIgnoringInputsClientRpc(bool value) {
-        ignoringInputs = value;
-    }
-
     void InputMagnitude()
     {
         //Calculate Input Vectors
