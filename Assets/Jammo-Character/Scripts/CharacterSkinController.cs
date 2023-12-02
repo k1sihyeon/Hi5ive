@@ -5,7 +5,8 @@ using UnityEngine;
 public class CharacterSkinController : MonoBehaviour
 {
     Animator animator;
-    Renderer[] characterMaterials;
+    //Renderer[] characterMaterials;
+    SkinnedMeshRenderer[] characterMaterials;
 
     public Texture2D[] albedoList;
     [ColorUsage(true,true)]
@@ -13,12 +14,18 @@ public class CharacterSkinController : MonoBehaviour
     public enum EyePosition { normal, happy, angry, dead}
     public EyePosition eyeState;
 
+    private int rand;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        characterMaterials = GetComponentsInChildren<Renderer>();
-        
+        //characterMaterials = GetComponentsInChildren<Renderer>();
+        characterMaterials = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        rand = Random.Range(0, 4);
+        ChangeMaterialSettings(rand);
+
     }
 
     // Update is called once per frame
@@ -59,10 +66,12 @@ public class CharacterSkinController : MonoBehaviour
     {
         for (int i = 0; i < characterMaterials.Length; i++)
         {
-            if (characterMaterials[i].transform.CompareTag("PlayerEyes"))
+            if (characterMaterials[i].transform.CompareTag("PlayerEyes")) {
                 characterMaterials[i].material.SetColor("_EmissionColor", eyeColors[index]);
-            else
-                characterMaterials[i].material.SetTexture("_MainTex",albedoList[index]);
+            }
+            else {
+                characterMaterials[i].material.SetTexture("_BaseMap", albedoList[index]);
+            }
         }
     }
 
