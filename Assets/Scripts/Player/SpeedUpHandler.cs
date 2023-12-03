@@ -39,15 +39,13 @@ public class SpeedUpHandler : NetworkBehaviour
 
 
     private void OnTriggerEnter(Collider other)
-    {
-        if (!IsServer) return;
-
+    { 
         if (other.CompareTag("SpeedUp"))
         {
             Debug.Log("발판밟음");
             chromaticAberration.intensity.value = 0.5f;
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            SetPlayerSpeedClientRpc(8.5f);
+            player.moveSpeed = 10f;
 
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(2f));
@@ -57,7 +55,7 @@ public class SpeedUpHandler : NetworkBehaviour
             Debug.Log("스피드업밟음");
             chromaticAberration.intensity.value = 0.7f;
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            SetPlayerSpeedClientRpc(11f);
+            player.moveSpeed = 15f;
 
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(3f));
@@ -69,13 +67,13 @@ public class SpeedUpHandler : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
         chromaticAberration.intensity.value = 0.0f;
-        SetPlayerSpeedClientRpc(7f);
+        player.moveSpeed = 7f;
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     private void SetPlayerSpeedClientRpc(float speed)
     {
         // 클라이언트에서만 호출되며, 플레이어의 속도를 변경
         player.moveSpeed = speed;
-    }
+    }*/
 }
