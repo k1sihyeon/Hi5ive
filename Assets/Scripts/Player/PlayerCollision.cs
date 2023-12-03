@@ -27,7 +27,7 @@ public class PlayerCollision : NetworkBehaviour {
     [SerializeField] private float currentEnergy = 0f;
     private float collisionIgnoreTime = 5f;
     private bool ignoringCollisions = false;
-
+    public GameObject Ultimate_effect;
 
     private void Start() {
         if (IsServer) {
@@ -140,10 +140,13 @@ public class PlayerCollision : NetworkBehaviour {
 
             //Ultimate
             if (currentEnergy >= maxEnergy) {
-
+                Ultimate_effectOnClientRpc();
+                StartCoroutine(Ultimate_corutine(3f));
                 OnUltimate();
+                
 
             }
+            
         }
         else {
             if(collision.gameObject.layer == Layer.OBSTACLE_LAYER) {
@@ -153,8 +156,38 @@ public class PlayerCollision : NetworkBehaviour {
         }
 
     }
+    [ServerRpc]
+    private void Ultimate_effectOnServerRpc()
+    {
+        Ultimate_effect.SetActive(true);
+        Ultimate_effectOnClientRpc();
 
-    
+    }
+    [ClientRpc]
+    private void Ultimate_effectOnClientRpc()
+    {
+        Ultimate_effect.SetActive(true);
+    }
+    [ServerRpc]
+    private void Ultimate_effectOffServerRpc()
+    {
+        Ultimate_effect.SetActive(false);
+        Ultimate_effectOffClientRpc();
+
+    }
+    [ClientRpc]
+    private void Ultimate_effectOffClientRpc()
+    {
+        Ultimate_effect.SetActive(false);
+
+    }
+    private IEnumerator Ultimate_corutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Ultimate_effectOffClientRpc();
+
+    }
+
 
     private IEnumerator DelayedResetSpeed(float delay)
     {
