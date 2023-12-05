@@ -37,23 +37,28 @@ public class PlayerCollision : NetworkBehaviour {
             UpdateEnergyClientRpc(currentEnergy);
         }
 
-        player = GetComponent<PlayerController>();
-        playerCamera = GetComponentInChildren<Camera>();
-        if (playerCamera != null) {
-            volume = playerCamera.GetComponent<Volume>();
+        if (IsLocalPlayer) {
 
-            if (volume != null ) {
-                volume.profile.TryGet(out aberration);
+            player = GetComponent<PlayerController>();
+            playerCamera = GetComponentInChildren<Camera>();
+
+            if (playerCamera != null) {
+                volume = playerCamera.GetComponent<Volume>();
+
+                if (volume != null) {
+                    volume.profile.TryGet(out aberration);
+                }
+                else {
+                    Debug.LogError("Volume 컴포넌트를 찾을 수 없음");
+                }
             }
             else {
-                Debug.LogError("Volume 컴포넌트를 찾을 수 없음");
+                Debug.LogError("플레이어 자식 카메라를 찾을 수 없음");
             }
-        }
-        else {
-            Debug.LogError("플레이어 자식 카메라를 찾을 수 없음");
+
         }
 
-     
+
     }
 
     private void Update()
@@ -86,8 +91,7 @@ public class PlayerCollision : NetworkBehaviour {
         PlayerController.instance.moveSpeed = 15f;
         UpdatePlayerSpeedClientRpc(15f);
 
-        //intensity
-        aberration.intensity.value = 0.8f;
+        UpdateChromaticAberrationClientRpc(0.8f);
 
         Invoke("OffUltimate", 3);
     }
@@ -99,8 +103,7 @@ public class PlayerCollision : NetworkBehaviour {
         PlayerController.instance.moveSpeed = 5f;
         UpdatePlayerSpeedClientRpc(5f);
 
-        //int
-        aberration.intensity.value = 0f;
+        UpdateChromaticAberrationClientRpc(0f);
 
         ignoringCollisions = false;
     }
@@ -140,9 +143,10 @@ public class PlayerCollision : NetworkBehaviour {
 
             //Ultimate
             if (currentEnergy >= maxEnergy) {
+                OnUltimate();
                 Ultimate_effectOnClientRpc();
                 StartCoroutine(Ultimate_corutine(3f));
-                OnUltimate();
+
                 
 
             }
@@ -156,6 +160,17 @@ public class PlayerCollision : NetworkBehaviour {
         }
 
     }
+
+    [ClientRpc]
+    private void UpdateChromaticAberrationClientRpc(float value) {
+
+        if(IsLocalPlayer) {
+            aberration.intensity.value = value;
+        }
+
+    }
+
+
     [ServerRpc]
     private void Ultimate_effectOnServerRpc()
     {
@@ -213,6 +228,7 @@ public class PlayerCollision : NetworkBehaviour {
 
     [ClientRpc]
     private void UpdatePlayerSpeedClientRpc(float speed) {
+        player = GetComponent<PlayerController>();
         player.moveSpeed = speed;
     }
     
