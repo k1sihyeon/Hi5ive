@@ -15,6 +15,7 @@ TagManager:
   - Super_SpeedUp
   - NPC
   - EndOfWorld
+  - randombox
   layers:
   - Default
   - TransparentFX

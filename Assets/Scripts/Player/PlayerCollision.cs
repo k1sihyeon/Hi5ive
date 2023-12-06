@@ -28,6 +28,7 @@ public class PlayerCollision : NetworkBehaviour {
     private float collisionIgnoreTime = 5f;
     private bool ignoringCollisions = false;
     public GameObject Ultimate_effect;
+    private int randombox_result;
 
     private void Start() {
         if (IsServer) {
@@ -108,6 +109,12 @@ public class PlayerCollision : NetworkBehaviour {
         ignoringCollisions = false;
     }
 
+    void resetspeed()
+    {
+        player.moveSpeed = 5f;
+        UpdatePlayerSpeedClientRpc(5f);
+
+    }
 
     private void NetworkDestroy(Collision collision) {
         ulong enemyNetworkId = collision.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
@@ -135,7 +142,15 @@ public class PlayerCollision : NetworkBehaviour {
             if(collision.gameObject.CompareTag("Obstacle")) {
                 energyIncreaseRate = 30f;
             }
-            
+
+            if (collision.gameObject.CompareTag("randombox"))
+            {
+                randombox_result = Random.Range(-5, 6);
+                player.moveSpeed = player.moveSpeed + randombox_result;
+                UpdatePlayerSpeedClientRpc(player.moveSpeed);
+                Invoke("resetspeed", 3);
+                NetworkDestroy(collision);
+            }
 
             currentEnergy += energyIncreaseRate;
             UpdateUltSlider();
