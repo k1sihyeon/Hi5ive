@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerSkinController : NetworkBehaviour {
+public class PlayerSkinController : MonoBehaviour {
 
     //Renderer[] characterMaterials;
     SkinnedMeshRenderer[] characterMaterials;
@@ -14,14 +14,16 @@ public class PlayerSkinController : NetworkBehaviour {
 
     void Start() {
 
-        if (IsLocalPlayer) {
-            characterMaterials = GetComponentsInChildren<SkinnedMeshRenderer>();
-            rand = Random.Range(0, 4);
-            Debug.Log("rand: " + rand);
-            ChangeMaterial(rand);
+        RandomChangeMaterial();
 
-            ChangeMaterialServerRpc(rand);
-        }
+        //if (IsLocalPlayer) {
+        //    characterMaterials = GetComponentsInChildren<SkinnedMeshRenderer>();
+        //    rand = Random.Range(0, 4);
+        //    Debug.Log("rand: " + rand);
+        //    ChangeMaterial(rand);
+
+        //    ChangeMaterialServerRpc(rand);
+        //}
     }
 
     void ChangeMaterial(int index) {
@@ -36,6 +38,13 @@ public class PlayerSkinController : NetworkBehaviour {
                 characterMaterials[i].material.SetTexture("_BaseMap", albedoList[index]);
             }
         }
+    }
+
+    void RandomChangeMaterial() {
+        characterMaterials = GetComponentsInChildren<SkinnedMeshRenderer>();
+        rand = Random.Range(0, 4);
+        Debug.Log("rand: " + rand);
+        ChangeMaterial(rand);
     }
 
     [ServerRpc]
