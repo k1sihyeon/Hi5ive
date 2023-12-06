@@ -20,10 +20,8 @@ public class PlayerSkinController : NetworkBehaviour {
             Debug.Log("rand: " + rand);
             ChangeMaterial(rand);
 
-            ChangeMaterialOnRpc(rand);
+            ChangeMaterialServerRpc(rand);
         }
-
-
     }
 
     void ChangeMaterial(int index) {
@@ -42,16 +40,13 @@ public class PlayerSkinController : NetworkBehaviour {
 
     [ServerRpc]
     void ChangeMaterialServerRpc(int index) {
+        ChangeMaterial(index);
         ChangeMaterialClientRpc(index);
     }
 
     [ClientRpc]
     void ChangeMaterialClientRpc(int index) {
         ChangeMaterial(index);
-    }
-
-    void ChangeMaterialOnRpc(int index) {
-        ChangeMaterialServerRpc(index);
     }
 
     void Update() {

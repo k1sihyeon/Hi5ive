@@ -44,6 +44,7 @@ public class TimeManager : NetworkBehaviour {
 
     [ClientRpc]
     private void UpdateIgnoringInputsClientRpc(bool value) {
+        player = GetComponent<PlayerController>();
         player.ignoringInputs = value;
     }
 

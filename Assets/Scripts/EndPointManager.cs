@@ -29,16 +29,26 @@ public class EndPointManager : NetworkBehaviour {
 
             rank += 1;
 
-            UpdateRank();
-
-            if (IsLocalPlayer) {
-                playerEndPoint.rank = rank;
-            }
+            UpdateRankClientRpc(rank);
         }
     }
 
-    private void UpdateRank() {
+    private void UpdateRankUI(int rank) {
         UIController.instance.UpdateRankUI(rank);
     }
+
+    [ClientRpc]
+    private void UpdateRankClientRpc(int rank) {
+        if (IsLocalPlayer) {
+            Debug.Log("update rank client rpc");
+            playerEndPoint = GetComponent<PlayerEndPoint>();
+            playerEndPoint.rank = rank;
+            UIController.instance.UpdateRankUI(rank);
+
+            UpdateRankUI(rank);
+        }
+    }
+
+
 
 }
