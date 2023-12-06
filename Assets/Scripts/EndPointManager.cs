@@ -9,6 +9,7 @@ public class EndPointManager : NetworkBehaviour {
 
     [SerializeField] private int rank = 0;
     private PlayerEndPoint playerEndPoint;
+    private bool coolDown = true;
 
     void Start() {
         //player = GetComponent<PlayerController>();
@@ -25,17 +26,33 @@ public class EndPointManager : NetworkBehaviour {
         if (!IsServer)
             return;
 
+        
         if (collision.gameObject.CompareTag("Player")) {
 
-            rank += 1;
+            if (coolDown) {
+                coolDown = false;
 
-            UpdateRankClientRpc(rank);
+                rank += 1;
+
+                Debug.Log("world Rank: " + rank);
+
+                UpdateRankUI(rank);
+
+                ResetCoolDown(1f);
+            }
+
+            
         }
+    }
+
+    private IEnumerator ResetCoolDown(float delay) {
+        yield return new WaitForSeconds(delay);
+        coolDown = true;
     }
 
     private void UpdateRankUI(int rank) {
         UIController.instance.UpdateRankUI(rank);
-    }
+}
 
     [ClientRpc]
     private void UpdateRankClientRpc(int rank) {
@@ -43,7 +60,7 @@ public class EndPointManager : NetworkBehaviour {
             Debug.Log("update rank client rpc");
             playerEndPoint = GetComponent<PlayerEndPoint>();
             playerEndPoint.rank = rank;
-            UIController.instance.UpdateRankUI(rank);
+            //UIController.instance.UpdateRankUI(rank);
 
             UpdateRankUI(rank);
         }

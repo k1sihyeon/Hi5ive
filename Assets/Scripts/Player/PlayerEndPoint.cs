@@ -49,4 +49,9 @@ public class PlayerEndPoint : NetworkBehaviour {
         this.gameObject.transform.position = point;
     }
 
+    public void UpdateRankUI(int rank) {
+        UIController.instance.UpdateRankUI(this.rank);
+        Debug.Log("player rank: " + this.rank);
+    }
+
 }

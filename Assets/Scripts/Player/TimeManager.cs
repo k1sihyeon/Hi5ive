@@ -6,7 +6,7 @@ using UnityEngine;
 public class TimeManager : NetworkBehaviour {
 
     private PlayerController player;
-    [SerializeField] private float startCountdown = 20f;
+    [SerializeField] private float startCountdown = 10f;
     private bool isStart = false;
 
     void Start() {
@@ -14,6 +14,10 @@ public class TimeManager : NetworkBehaviour {
         player = GetComponent<PlayerController>();
         //PlayerController.instance.ignoringInputs = true;
         //플레이어가 더 늦게 생성되므로 실행 x
+
+        if(IsOwner) {
+            SyncTimeServerRpc(startCountdown);
+        }
     }
 
     private void FixedUpdate() {
@@ -27,8 +31,8 @@ public class TimeManager : NetworkBehaviour {
             }
 
             if (startCountdown <= 0) {
-                UIController.instance.DisableCountdown();
                 isStart = true;
+                UIController.instance.DisableCountdown();
                 PlayerController.instance.ignoringInputs = false;
                 UpdateIgnoringInputsClientRpc(false);
             }
@@ -46,6 +50,12 @@ public class TimeManager : NetworkBehaviour {
     private void UpdateIgnoringInputsClientRpc(bool value) {
         player = GetComponent<PlayerController>();
         player.ignoringInputs = value;
+    }
+
+    [ServerRpc]
+    private void SyncTimeServerRpc(float time) {
+        startCountdown = time;
+        SendTimeClientRpc(time);
     }
 
 }
