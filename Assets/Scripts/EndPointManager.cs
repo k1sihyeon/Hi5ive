@@ -20,15 +20,18 @@ public class EndPointManager : NetworkBehaviour {
     private void OnCollisionEnter(Collision collision) {
 
         if (collision.gameObject.CompareTag("Player")) {
+            if (coolDown) {
+                coolDown = false;
+                rank += 1;
+                //Debug.Log("[EndPoint] Rank: " + rank.Value);
+                Debug.Log("[EndPoint] Rank: " + rank);
 
-            rank += 1;
-            //Debug.Log("[EndPoint] Rank: " + rank.Value);
-            Debug.Log("[EndPoint] Rank: " + rank);
 
-
-            UpdateRankServerRpc(rank);
-            Debug.Log("[EndPoint] Rank: " + rank);
-            UpdateRankUI(rank);
+                UpdateRankServerRpc(rank);
+                Debug.Log("[EndPoint] Rank: " + rank);
+                UpdateRankUI(rank);
+                ResetCoolDown(0.5f);
+            }
 
         }
     }
