@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 public class TimeManager : NetworkBehaviour {
@@ -63,6 +64,7 @@ public class TimeManager : NetworkBehaviour {
         UIController.instance.DisableCountdown();
 
         //Scene Load
+        SceneManager.LoadScene("End_Result");
 
     }
 
