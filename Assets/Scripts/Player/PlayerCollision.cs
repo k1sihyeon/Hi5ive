@@ -215,7 +215,7 @@ public class PlayerCollision : NetworkBehaviour {
         {
             if (collision.gameObject.CompareTag("randombox"))
             {
-                randombox_result = Random.Range(-7, -4);
+                randombox_result = Random.Range(-4, -3);
                 RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
                 boxeffect.effect(randombox_result);
                 PlayerController.instance.moveSpeed = randombox_result + 7;
