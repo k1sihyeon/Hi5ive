@@ -12,7 +12,9 @@ public class PlayerEndPoint : NetworkBehaviour {
 
     [SerializeField] private Vector3 observePoint = new Vector3(15, 25, -207);
     [SerializeField] private Vector3 startPoint = new Vector3(185, -2, 290);
-    public int rank = 0;
+    public int rank = -1;
+    [SerializeField] private int endCountdown = 10;
+
 
     private void Awake() {
         if (PlayerEndPoint.instance == null) {
@@ -25,22 +27,33 @@ public class PlayerEndPoint : NetworkBehaviour {
         if (collision.gameObject.CompareTag("EndPoint")) {
 
             if(IsLocalPlayer) {
-                Debug.Log("IS PLAYER!! collision");
                 SetPositionServerRpc(observePoint);
             }
 
-            Debug.Log("Player End Point");
             this.gameObject.transform.position = observePoint;
         }
 
         if(collision.gameObject.CompareTag("EndOfWorld")) {
             if (IsLocalPlayer) {
-                Debug.Log("IS PLAYER!! collision");
                 SetPositionServerRpc(startPoint);
             }
 
-            Debug.Log("Player End Point");
             this.gameObject.transform.position = startPoint;
+        }
+    }
+
+    public void UpdateRank(int val) {
+        this.rank = val;
+        Debug.Log("[Player] Rank: " + rank);
+        PlayerPrefs.SetInt("Rank", rank);
+
+        if(rank == 1) {
+            Debug.Log("[Player] end countdown");
+
+            StartCoroutine(
+            this.gameObject.GetComponent<TimeManager>().EndCountdown()
+            );
+            StartEndCountdownServerRpc();
         }
     }
 
@@ -54,9 +67,22 @@ public class PlayerEndPoint : NetworkBehaviour {
         this.gameObject.transform.position = point;
     }
 
-    public void UpdateRankUI(int rank) {
-        UIController.instance.UpdateRankUI(this.rank);
-        Debug.Log("player rank: " + this.rank);
+    [ServerRpc]
+    private void StartEndCountdownServerRpc() {
+        Debug.Log("[Player serverRpc] end countdown");
+        StartEndCountdownClientRpc();
+        StartCoroutine(
+            this.gameObject.GetComponent<TimeManager>().EndCountdown()
+            );
     }
+
+    [ClientRpc]
+    private void StartEndCountdownClientRpc() {
+        Debug.Log("[Player client rpc] end countdown");
+        StartCoroutine(
+            this.gameObject.GetComponent<TimeManager>().EndCountdown()
+            );
+    }
+
 
 }

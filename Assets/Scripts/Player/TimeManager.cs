@@ -2,12 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class TimeManager : NetworkBehaviour {
 
     private PlayerController player;
     [SerializeField] private float startCountdown = 10f;
+    [SerializeField] private int endCountdown = 10;
     private bool isStart = false;
+
+    public static TimeManager instance;
+
+    private void Awake() {
+        if (TimeManager.instance == null) {
+            TimeManager.instance = this;
+        }
+    }
 
     void Start() {
         UIController.instance.EnableCountdown();
@@ -40,6 +50,22 @@ public class TimeManager : NetworkBehaviour {
             UIController.instance.UpdateCountdown(startCountdown);
         }
     }
+
+    public IEnumerator EndCountdown() {
+        Debug.Log("[Time] end countdown");
+        UIController.instance.EnableCountdown();
+
+        for (int i = endCountdown; i >= 0; i--) {
+            UIController.instance.UpdateCountdownInt(i);
+            yield return new WaitForSeconds(1);
+        }
+
+        UIController.instance.DisableCountdown();
+
+        //Scene Load
+
+    }
+
 
     [ClientRpc]
     private void SendTimeClientRpc(float time) {

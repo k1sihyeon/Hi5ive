@@ -23,14 +23,14 @@ public class EndPointManager : NetworkBehaviour {
             if (coolDown) {
                 coolDown = false;
                 rank += 1;
-                //Debug.Log("[EndPoint] Rank: " + rank.Value);
                 Debug.Log("[EndPoint] Rank: " + rank);
-
 
                 UpdateRankServerRpc(rank);
                 Debug.Log("[EndPoint] Rank: " + rank);
                 UpdateRankUI(rank);
                 ResetCoolDown(0.5f);
+                collision.gameObject.GetComponent<PlayerEndPoint>().UpdateRank(rank);
+                
             }
 
         }
@@ -45,7 +45,7 @@ public class EndPointManager : NetworkBehaviour {
         UIController.instance.UpdateRankUI(rank);
     }
 
-    [ServerRpc]
+    [ServerRpc (RequireOwnership = false)]
     private void UpdateRankServerRpc(int val) {
         Debug.Log("[Server Rpc] Rank: " + rank);
         Debug.Log("[Server Rpc] val: " + val);

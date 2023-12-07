@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LoginScene.unity
     guid: 18deda6309184a442a4e822cb4ad546f
   - enabled: 1
@@ -26,10 +26,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TutorialScene.unity
     guid: 229d94b53b467b849a93bc789aa59c8f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SignUpScene.unity
     guid: f65f68144b23685438f422d6a1ca582c
   - enabled: 0
-    path: Assets/Scenes/Space_Map.unity
-    guid: d4bff3513cbdaac4d92680184685ec90
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}

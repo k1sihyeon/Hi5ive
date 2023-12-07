@@ -47,6 +47,9 @@ public class UIController : MonoBehaviour {
     public void UpdateCountdown(float time) {
         countDownText.text = Math.Round(time, 2).ToString();
     }
+    public void UpdateCountdownInt(int time) {
+        countDownText.text = time.ToString();
+    }
 
     void UpdateEnergyUI(float value) {
         ultVal = value;
