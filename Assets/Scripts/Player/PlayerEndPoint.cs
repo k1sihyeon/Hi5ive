@@ -8,9 +8,17 @@ using UnityEngine.UI;
 
 public class PlayerEndPoint : NetworkBehaviour {
 
+    public static PlayerEndPoint instance;
+
     [SerializeField] private Vector3 observePoint = new Vector3(15, 25, -207);
     [SerializeField] private Vector3 startPoint = new Vector3(185, -2, 290);
     public int rank = 0;
+
+    private void Awake() {
+        if (PlayerEndPoint.instance == null) {
+            PlayerEndPoint.instance = this;
+        }
+    }
 
     private void OnCollisionEnter(Collision collision) {
 
@@ -37,15 +45,12 @@ public class PlayerEndPoint : NetworkBehaviour {
     }
 
     [ServerRpc]
-    private void SetPositionServerRpc(Vector3 point) {
-        Debug.Log("PLAYER!! position server rpc");
+    public void SetPositionServerRpc(Vector3 point) {
         SetPositionClientRpc(point);
     }
 
     [ClientRpc]
     private void SetPositionClientRpc(Vector3 point) {
-        Debug.Log("PLAYER!! position client rpc");
-
         this.gameObject.transform.position = point;
     }
 

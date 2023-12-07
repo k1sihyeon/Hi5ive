@@ -39,6 +39,9 @@ public class PlayerController : NetworkBehaviour
     public float desiredRotationSpeed = 0.1f;
     public float allowPlayerRotation = 0.1f;
 
+    [SerializeField] private Vector3 endPoint = new Vector3(15, 3, -280);
+
+
     private void Awake() {
         if(PlayerController.instance == null ) {
             PlayerController.instance = this;
@@ -89,6 +92,13 @@ public class PlayerController : NetworkBehaviour
         if (!ignoringInputs) { //입력 무시 상태가 아니면
 
             if (IsLocalPlayer) {
+
+                //디버깅용 골인지점 이동
+                if(Input.GetKeyDown(KeyCode.BackQuote)) {
+                    this.gameObject.transform.position = endPoint;
+                    PlayerEndPoint.instance.SetPositionServerRpc(endPoint);
+                }
+
                 playerRenderer = GetComponent<Renderer>();
                 // Input 처리
                 moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
