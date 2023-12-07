@@ -111,7 +111,7 @@ public class PlayerCollision : NetworkBehaviour {
 
     void resetspeed()
     {
-        player.moveSpeed = 5f;
+        PlayerController.instance.moveSpeed = 5f;
         UpdatePlayerSpeedClientRpc(5f);
 
     }
@@ -120,6 +120,34 @@ public class PlayerCollision : NetworkBehaviour {
         ulong enemyNetworkId = collision.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
         Destroy(collision.gameObject);
         CollisionClientRpc(enemyNetworkId);
+    }
+
+    private void NetworkChildDestroy(Collision collision)
+    {
+        // collision에서 NetworkObject 컴포넌트 가져오기
+    NetworkObject networkObject = collision.gameObject.GetComponent<NetworkObject>();
+
+    // NetworkObject가 null이 아니면 계속 진행
+    if (networkObject != null) {
+        // 부모 오브젝트의 Transform 가져오기
+        Transform parentTransform = networkObject.transform;
+
+        // 부모의 자식 오브젝트 중에서 "Cube"를 가진 오브젝트 찾기
+        Transform childTransform = parentTransform.Find("Cube");
+
+        // 찾은 자식 오브젝트가 있다면 비활성화
+        if (childTransform != null) {
+            childTransform.gameObject.SetActive(false);
+
+            // 여기서 원하는 작업 수행
+            // ...
+
+            // RPC 호출
+            CollisionClientRpc(networkObject.NetworkObjectId);
+        } else {
+            Debug.LogWarning("Cube 자식 오브젝트를 찾을 수 없습니다.");
+        }
+    }
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -148,8 +176,8 @@ public class PlayerCollision : NetworkBehaviour {
                 randombox_result = Random.Range(-5, 0);
                 RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
                 boxeffect.effect(randombox_result);
-                player.moveSpeed = player.moveSpeed + randombox_result;
-                UpdatePlayerSpeedClientRpc(player.moveSpeed);
+                PlayerController.instance.moveSpeed = randombox_result+7;
+                UpdatePlayerSpeedClientRpc(randombox_result+7);
                 Invoke("resetspeed", 3);
                 NetworkDestroy(collision);
             }
@@ -239,6 +267,15 @@ public class PlayerCollision : NetworkBehaviour {
 
     }
 
+    [ClientRpc]
+    private void CollisionChildClientRpc(ulong enemyNetworkId)
+    {
+
+        NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+        Transform childtransform = enemyNetworkObject.transform.Find("Cube");
+        childtransform.gameObject.SetActive(false);
+
+    }
     [ClientRpc]
     private void UpdateEnergyClientRpc(float energy) {
         currentEnergy = energy;
