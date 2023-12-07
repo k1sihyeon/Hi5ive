@@ -145,7 +145,9 @@ public class PlayerCollision : NetworkBehaviour {
 
             if (collision.gameObject.CompareTag("randombox"))
             {
-                randombox_result = Random.Range(-5, 6);
+                randombox_result = Random.Range(-5, 0);
+                RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
+                boxeffect.effect(randombox_result);
                 player.moveSpeed = player.moveSpeed + randombox_result;
                 UpdatePlayerSpeedClientRpc(player.moveSpeed);
                 Invoke("resetspeed", 3);
@@ -186,24 +188,26 @@ public class PlayerCollision : NetworkBehaviour {
     }
 
 
-    [ServerRpc]
-    private void Ultimate_effectOnServerRpc()
-    {
-        Ultimate_effect.SetActive(true);
-        Ultimate_effectOnClientRpc();
+    /* [ServerRpc]
+     private void Ultimate_effectOnServerRpc()
+     {
+         Ultimate_effect.SetActive(true);
+         Ultimate_effectOnClientRpc();
 
-    }
-    [ClientRpc]
-    private void Ultimate_effectOnClientRpc()
-    {
-        Ultimate_effect.SetActive(true);
-    }
-    [ServerRpc]
+     }*/
+
+    /*[ServerRpc]
     private void Ultimate_effectOffServerRpc()
     {
         Ultimate_effect.SetActive(false);
         Ultimate_effectOffClientRpc();
 
+    }*/
+
+    [ClientRpc]
+    private void Ultimate_effectOnClientRpc()
+    {
+        Ultimate_effect.SetActive(true);
     }
     [ClientRpc]
     private void Ultimate_effectOffClientRpc()
