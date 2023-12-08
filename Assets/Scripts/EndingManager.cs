@@ -10,7 +10,14 @@ public class EndingManager : MonoBehaviour {
 
     void Start() {
         rank = PlayerPrefs.GetInt("Rank");
-        rankText.text = $"{rank}등 입니다!!";
+
+        if (rank <= 0) {
+            rankText.text = "완주 실패..";
+        }
+        else if (rank > 0) {
+            rankText.text = $"{rank}등 입니다!!";
+        }
+       
         rankText.gameObject.SetActive(true);
     }
 
