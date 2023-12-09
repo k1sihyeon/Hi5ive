@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
     public float playerHeightOffset = 1.15f;
     public float distanceAhead = 1.0f;
 
+    public ParticleSystem run_effect;
+    private bool isPlaying;
+
     private Vector3 moveInput;
     private float rotationInput;
 
@@ -104,6 +107,25 @@ public class PlayerController : NetworkBehaviour
                 moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
                 rotationInput = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
+
+                if (moveInput.magnitude > 0.1f && isGrounded)
+                {
+                    Debug.Log("움직임");
+
+                    if (!isPlaying)
+                    {
+                        // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 재생
+                        RunEffectServerRpc(true);
+                    }
+                }
+                else if (moveInput.magnitude < 0.1f || !isGrounded)
+                {
+                    if (isPlaying)
+                    {
+                        // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 중지
+                        RunEffectServerRpc(false);
+                    }
+                }
                 // 회전 입력을 적용
                 Rotate(rotationInput);
 
@@ -136,6 +158,7 @@ public class PlayerController : NetworkBehaviour
             // 서버로 이동 정보 보내기
             if (IsServer) {
                 SendMovementDataServerRpc(moveInput);
+                
             }
 
             // 클라이언트에서 이동 및 회전 적용
@@ -256,6 +279,29 @@ public class PlayerController : NetworkBehaviour
             isGrounded = true;
             is_first_jump = false;
 
+        }
+    }
+
+    [ServerRpc]
+    void RunEffectServerRpc(bool play)
+    {
+        // 서버에서 클라이언트로 RunEffect RPC 메시지를 전달하여 달리기 이펙트를 동기화
+        RunEffectClientRpc(play);
+    }
+
+    [ClientRpc]
+    void RunEffectClientRpc(bool play)
+    {
+        // 클라이언트에서 달리기 이펙트 상태를 동기화하고 재생 또는 중지
+        isPlaying = play;
+
+        if (isPlaying)
+        {
+            run_effect.Play();
+        }
+        else
+        {
+            run_effect.Stop();
         }
     }
 
