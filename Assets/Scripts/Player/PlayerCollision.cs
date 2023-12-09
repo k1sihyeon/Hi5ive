@@ -215,11 +215,19 @@ public class PlayerCollision : NetworkBehaviour {
         {
             if (collision.gameObject.CompareTag("randombox"))
             {
-                randombox_result = Random.Range(-4, -3);
+                randombox_result = Random.Range(0,2);
+                if(randombox_result==0)
+                {
+                    randombox_result = -4;
+                }
+                else if(randombox_result==1)
+                {
+                    randombox_result = 4;
+                }
                 RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
                 boxeffect.effect(randombox_result);
-                PlayerController.instance.moveSpeed = randombox_result + 7;
-                UpdatePlayerSpeedClientRpc(randombox_result + 7);
+                PlayerController.instance.moveSpeed = randombox_result + 5;
+                UpdatePlayerSpeedClientRpc(randombox_result + 5);
                 Invoke("resetspeed", 3);
                 NetworkDestroy_Trigger(collision);
             }

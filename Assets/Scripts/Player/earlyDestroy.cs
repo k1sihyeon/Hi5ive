@@ -7,6 +7,7 @@ public class earlyDestroy : MonoBehaviour
     public GameObject box;
     public GameObject guess;
     public GameObject explosion_effect;
+    public GameObject plus_effect;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +22,7 @@ public class earlyDestroy : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        explosion_effect.SetActive(true);
+        
         box.SetActive(false);
         guess.SetActive(false);
     }
