@@ -6331,7 +6331,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 192.168.0.1
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 19033f57a03e73e4ab3b144299fb6f79, type: 2}
   m_sharedMaterial: {fileID: 860160013110799438, guid: 19033f57a03e73e4ab3b144299fb6f79,
