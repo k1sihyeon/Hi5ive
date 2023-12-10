@@ -136,7 +136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22412354, guid: 52005b25791146745ac91432f3a7979e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.37097168
+      value: -0.3708496
       objectReference: {fileID: 0}
     - target: {fileID: 22416912, guid: 52005b25791146745ac91432f3a7979e, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -228,7 +228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22499570, guid: 52005b25791146745ac91432f3a7979e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.37097168
+      value: -0.3708496
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52005b25791146745ac91432f3a7979e, type: 3}
@@ -2235,7 +2235,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: 75}
+  m_AnchoredPosition: {x: 13, y: 53}
   m_SizeDelta: {x: 567.871, y: 635.213}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &609327590
@@ -6464,8 +6464,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279107827
-  m_fontColor: {r: 0.9528302, g: 0, b: 0.05644235, a: 1}
+    rgba: 4279835831
+  m_fontColor: {r: 0.7176471, g: 0.10980392, b: 0.09803922, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
