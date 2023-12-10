@@ -30,17 +30,19 @@ public class RandomEffect : NetworkBehaviour
 
     public void effect(int result)
     {
+        
         if (!IsServer)
         {
             return;
         }
+        
         if (result < 0)
         {
             Effect_On_ClientRpc();
             StartCoroutine(Effect_corutine(3f));
         }
         else if(result>0)
-        {
+        {        
             Effectplus_On_ClientRpc();
             StartCoroutine(Effectplus_corutine(3f));
         }
@@ -71,7 +73,6 @@ public class RandomEffect : NetworkBehaviour
     private void Effectplus_On_ClientRpc()
     {
         Plus_effect.SetActive(true);
-        PlusSound.Play();
     }
     [ClientRpc]
     private void Effectminus_Off_ClientRpc()

@@ -3,18 +3,24 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class SpeedUpHandler : NetworkBehaviour
 {
     private PlayerController player;
     private Volume volume;
     private ChromaticAberration chromaticAberration;
+    private int randombox_result;
+
+    public AudioSource PlusSound;//사운드저장공간
+    public AudioClip PlusSoundSource;//실제사운드
 
     private void Start()
     {
         player = GetComponent<PlayerController>();
 
         if (IsLocalPlayer) {
+            PlusSound.clip = PlusSoundSource;
             // 플레이어 객체에서 자식 중에 카메라 찾기
             Camera playerCamera = GetComponentInChildren<Camera>();
             if (playerCamera != null) {
@@ -61,8 +67,53 @@ public class SpeedUpHandler : NetworkBehaviour
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(3f));
         }
+        if (other.gameObject.CompareTag("randombox"))
+        {
+            if(IsServer)
+            {
+                randombox_result = Random.Range(0, 2);
+                if (randombox_result == 0)
+                {
+                    randombox_result = -4;
+                }
+                else if (randombox_result == 1)
+                {
+                    PlusSound.Play();
+                    randombox_result = 4;
+                }
+                RandomEffect boxeffect = other.gameObject.GetComponent<RandomEffect>();
+                boxeffect.effect(randombox_result);
+                player.moveSpeed = randombox_result + 5;
+                UpdatePlayerSpeedClientRpc(randombox_result + 5);
+                StartCoroutine(ResetSpeedAfterDelayRpc(3f));
+                NetworkDestroy_Trigger(other);
+            }
+            
+        }
     }
-    
+
+    [ClientRpc]
+    private void UpdatePlayerSpeedClientRpc(float speed)
+    {
+        player.moveSpeed = speed;
+    }
+
+    private void NetworkDestroy_Trigger(Collider collision)
+    {
+        ulong enemyNetworkId = collision.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
+        Destroy(collision.gameObject);
+        CollisionClientRpc(enemyNetworkId);
+    }
+
+    [ClientRpc]
+    private void CollisionClientRpc(ulong enemyNetworkId)
+    {
+
+        NetworkObject enemyNetworkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[enemyNetworkId];
+        Destroy(enemyNetworkObject.gameObject);
+
+    }
+
     private IEnumerator ResetSpeedAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -70,6 +121,16 @@ public class SpeedUpHandler : NetworkBehaviour
         //chromaticAberration.intensity.value = 0.0f;
         UpdateChromaticAberrationClientRpc(0f);
         player.moveSpeed = 7f;
+    }
+
+    private IEnumerator ResetSpeedAfterDelayRpc(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
+        //chromaticAberration.intensity.value = 0.0f;
+        UpdateChromaticAberrationClientRpc(0f);
+        player.moveSpeed = 7f;
+        UpdatePlayerSpeedClientRpc(player.moveSpeed);
     }
 
     [ClientRpc]
@@ -81,7 +142,7 @@ public class SpeedUpHandler : NetworkBehaviour
 
     }
 
-
+    
 
     /*[ClientRpc]
     private void SetPlayerSpeedClientRpc(float speed)

@@ -30,6 +30,20 @@ public class PlayerCollision : NetworkBehaviour {
     public GameObject Ultimate_effect;
     private int randombox_result;
 
+    //public Image attacked;
+
+    public AudioSource PlusSound;//사운드저장공간
+    public AudioClip PlusSoundSource;//실제사운드
+
+    public GameObject player1;
+    public AudioSource AudioSource;
+    public AudioClip AudioClip;
+    public Transform cameraTransform;
+    private Vector3 originalPosition;
+    private bool isShaking = false;
+    float duration = 1;
+    float intensity = 1;
+
     private void Start() {
         if (IsServer) {
             currentEnergy = 0f;
@@ -39,7 +53,8 @@ public class PlayerCollision : NetworkBehaviour {
         }
 
         if (IsLocalPlayer) {
-
+            PlusSound.clip = PlusSoundSource;
+            AudioSource.clip = AudioClip;
             player = GetComponent<PlayerController>();
             playerCamera = GetComponentInChildren<Camera>();
 
@@ -169,16 +184,19 @@ public class PlayerCollision : NetworkBehaviour {
             energyIncreaseRate = 0f;
 
             if (collision.gameObject.CompareTag("Enemy")) {
+                ShakeCameraClientRpc();
                 energyIncreaseRate = 50f;
                 NetworkDestroy(collision);
             }
 
             if (collision.gameObject.CompareTag("BallObstacle")) {
+                ShakeCameraClientRpc();
                 energyIncreaseRate = 100f;
                 NetworkDestroy(collision);
             }
 
             if(collision.gameObject.CompareTag("Obstacle")) {
+                ShakeCameraClientRpc();
                 energyIncreaseRate = 30f;
             }
 
@@ -208,32 +226,42 @@ public class PlayerCollision : NetworkBehaviour {
 
     }
 
-    private void OnTriggerEnter(Collider collision)
+    /*private void OnTriggerEnter(Collider collision)
     {
-        if (!IsServer) return;
-        if (!ignoringCollisions)
+        randombox_result = Random.Range(0, 2);
+        if(IsLocalPlayer)
         {
-            if (collision.gameObject.CompareTag("randombox"))
+            if (randombox_result > 0)
             {
-                randombox_result = Random.Range(0,2);
-                if(randombox_result==0)
-                {
-                    randombox_result = -4;
-                }
-                else if(randombox_result==1)
-                {
-                    randombox_result = 4;
-                }
-                RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
-                boxeffect.effect(randombox_result);
-                PlayerController.instance.moveSpeed = randombox_result + 5;
-                UpdatePlayerSpeedClientRpc(randombox_result + 5);
-                Invoke("resetspeed", 3);
-                NetworkDestroy_Trigger(collision);
+                PlusSound.Play();
             }
+            
         }
+        if (!ignoringCollisions)
+            {
+                if (collision.gameObject.CompareTag("randombox"))
+                {
+
+                    if (randombox_result == 0)
+                    {
+                        randombox_result = -4;
+                    }
+                    else if (randombox_result == 1)
+                    {
+                        randombox_result = 4;
+                    }
+                    RandomEffect boxeffect = collision.gameObject.GetComponent<RandomEffect>();
+                    boxeffect.effect(randombox_result);
+                    PlayerController.instance.moveSpeed = randombox_result + 5;
+                    //UpdatePlayerSpeedClientRpc(randombox_result + 5);
+                    Invoke("resetspeed", 3);
+                    NetworkDestroy_Trigger(collision);
+                }
+            }
+        
+        
            
-    }
+    }*/
 
     [ClientRpc]
     private void UpdateChromaticAberrationClientRpc(float value) {
@@ -316,6 +344,41 @@ public class PlayerCollision : NetworkBehaviour {
         player = GetComponent<PlayerController>();
         player.moveSpeed = speed;
     }
-    
+
+    [ClientRpc]
+    private void ShakeCameraClientRpc()
+    {
+        if (IsLocalPlayer)
+        {
+            AudioSource.Play();
+            StartCoroutine(ShakeEffect(duration, intensity));
+        }
+    }
+
+    private IEnumerator ShakeEffect(float duration, float intensity)
+    {
+        isShaking = true;
+        originalPosition = cameraTransform.localPosition;
+        float elapsed = 0f;
+        //attacked.enabled = true;
+        
+
+
+        while (elapsed < duration - 0.8)
+        {
+            float x = Random.Range(-0.1f, 0.1f) * intensity;
+            float y = Random.Range(-0.1f, 0.1f) * intensity;
+
+            cameraTransform.localPosition = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        //attacked.enabled = false;
+        cameraTransform.localPosition = originalPosition;
+        isShaking = false;
+
+    }
+
 
 }
