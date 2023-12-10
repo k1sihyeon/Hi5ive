@@ -6,8 +6,6 @@ public class earlyDestroy : MonoBehaviour
 {
     public GameObject box;
     public GameObject guess;
-    public GameObject explosion_effect;
-    public GameObject plus_effect;
     // Start is called before the first frame update
     void Start()
     {

@@ -6,10 +6,20 @@ public class RandomEffect : NetworkBehaviour
 {
     public GameObject Explosion_effect;
     public GameObject Plus_effect;
+
+    public AudioSource BoomSound;//사운드저장공간
+    public AudioClip BoomSoundSource;//실제사운드
+
+    public AudioSource PlusSound;//사운드저장공간
+    public AudioClip PlusSoundSource;//실제사운드
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-
+        BoomSound.clip = BoomSoundSource;
+        PlusSound.clip = PlusSoundSource;
     }
 
     // Update is called once per frame
@@ -41,6 +51,7 @@ public class RandomEffect : NetworkBehaviour
     private void Effect_On_ClientRpc()
     {
         Explosion_effect.SetActive(true);
+        BoomSound.Play();
     }
     [ClientRpc]
     private void Effect_Off_ClientRpc()
@@ -60,6 +71,7 @@ public class RandomEffect : NetworkBehaviour
     private void Effectplus_On_ClientRpc()
     {
         Plus_effect.SetActive(true);
+        PlusSound.Play();
     }
     [ClientRpc]
     private void Effectminus_Off_ClientRpc()
