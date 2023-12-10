@@ -534,11 +534,11 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Stage1TestingScene
+    - m_Text: Stage1
       m_Image: {fileID: 0}
     - m_Text: Stage2
       m_Image: {fileID: 0}
-    - m_Text: Stage 3
+    - m_Text: Stage3
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3683,7 +3683,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stage1TestingScene
+  m_text: Stage1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 083280b44d2457d4994516183bdd3012, type: 2}
   m_sharedMaterial: {fileID: 630310769412459859, guid: 083280b44d2457d4994516183bdd3012,
