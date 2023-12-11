@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using BackEnd;
 
-public class SignupInput : MonoBehaviour
-{
+public class SignupInput : MonoBehaviour {
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private TMP_InputField nicknameInputField;
@@ -86,7 +85,7 @@ public class SignupInput : MonoBehaviour
 
                 string message = string.Empty;
 
-                switch(int.Parse(callback.GetStatusCode()) ) {
+                switch (int.Parse(callback.GetStatusCode())) {
                     case 409:
                         message = "중복된 ID 입니다.";
                         break;

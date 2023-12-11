@@ -77,9 +77,6 @@ public class LobbyManager : MonoBehaviour
                 int ddIdx = localDD.value;
                 string ddText = localDD.options[ddIdx].text;
                 SceneManager.LoadScene(ddText);
-                //SceneManager.LoadScene("Stage1TestingScene", LoadSceneMode.Single);
-
-
             }
         });
 
@@ -95,7 +92,6 @@ public class LobbyManager : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
     void Start() {
         popup.SetActive(false);
         ipText.text = "";
@@ -110,8 +106,6 @@ public class LobbyManager : MonoBehaviour
 
         }
     }
-
-    // Update is called once per frame
     void Update()
     {
         
