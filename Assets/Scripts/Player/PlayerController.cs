@@ -8,6 +8,8 @@ public class PlayerController : NetworkBehaviour
 
     public bool ignoringInputs = false;
 
+    public int speed_up_count = 0;
+    public bool attack_cooldown = false;
     public float moveSpeed = 7f;
     public float rotationSpeed = 100f;
     public float jumpForce = 6f; // 점프 힘
@@ -16,6 +18,7 @@ public class PlayerController : NetworkBehaviour
     public float playerHeightOffset = 1.15f;
     public float distanceAhead = 1.0f;
 
+    public bool CanMove = true;
     public ParticleSystem run_effect;
     private bool isPlaying;
 
@@ -101,55 +104,60 @@ public class PlayerController : NetworkBehaviour
                     this.gameObject.transform.position = endPoint;
                     PlayerEndPoint.instance.SetPositionServerRpc(endPoint);
                 }
-
-                playerRenderer = GetComponent<Renderer>();
-                // Input 처리
-                moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-                rotationInput = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-
-
-                if (moveInput.magnitude > 0.1f && isGrounded)
+                if(CanMove)
                 {
-                    Debug.Log("움직임");
+                    playerRenderer = GetComponent<Renderer>();
+                    // Input 처리
+                    moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+                    rotationInput = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
-                    if (!isPlaying)
+
+                    if (moveInput.magnitude > 0.1f && isGrounded)
                     {
-                        // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 재생
-                        RunEffectServerRpc(true);
+                        
+
+                        if (!isPlaying)
+                        {
+                            // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 재생
+                            RunEffectServerRpc(true);
+                        }
                     }
-                }
-                else if (moveInput.magnitude < 0.1f || !isGrounded)
-                {
-                    if (isPlaying)
+                    else if (moveInput.magnitude < 0.1f || !isGrounded)
                     {
-                        // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 중지
-                        RunEffectServerRpc(false);
+                        if (isPlaying)
+                        {
+                            // RunEffect RPC 메서드를 호출하여 달리기 이펙트를 동기화하고 중지
+                            RunEffectServerRpc(false);
+                        }
                     }
+                    // 회전 입력을 적용
+                    Rotate(rotationInput);
+
+                    // 이동 입력을 회전에 맞게 수정
+                    moveInput = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * moveInput;
+
+                    // 클라이언트 또는 호스트 플레이어일 때, 메인 카메라를 플레이어에게 고정
+                    /* Vector3 playerTopPosition = transform.position + Vector3.up * playerHeightOffset;
+                     playerTopPosition = playerTopPosition + Vector3.forward * distanceAhead;
+                     playerCameraTransform.position = playerTopPosition;
+                     playerCameraTransform.rotation = transform.rotation;*/
+
+                    // 점프 처리
+                    if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+                    {
+                        Jump();
+                        anim.SetTrigger("jump");
+
+                    }
+                    else if (!isGrounded && is_first_jump && Input.GetKeyDown(KeyCode.Space))
+                    {
+                        DoubleJump();
+                        anim.SetTrigger("double jump");
+                    }
+
+                    InputMagnitude();
                 }
-                // 회전 입력을 적용
-                Rotate(rotationInput);
-
-                // 이동 입력을 회전에 맞게 수정
-                moveInput = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * moveInput;
-
-                // 클라이언트 또는 호스트 플레이어일 때, 메인 카메라를 플레이어에게 고정
-                /* Vector3 playerTopPosition = transform.position + Vector3.up * playerHeightOffset;
-                 playerTopPosition = playerTopPosition + Vector3.forward * distanceAhead;
-                 playerCameraTransform.position = playerTopPosition;
-                 playerCameraTransform.rotation = transform.rotation;*/
-
-                // 점프 처리
-                if (isGrounded && Input.GetKeyDown(KeyCode.Space)) {
-                    Jump();
-                    anim.SetTrigger("jump");
-
-                }
-                else if (!isGrounded && is_first_jump && Input.GetKeyDown(KeyCode.Space)) {
-                    DoubleJump();
-                    anim.SetTrigger("double jump");
-                }
-
-                InputMagnitude();
+                
             }
             else {
                 //Destroy(GetComponentInChildren<Camera>().gameObject);
@@ -172,26 +180,30 @@ public class PlayerController : NetworkBehaviour
 
     void InputMagnitude()
     {
-        //Calculate Input Vectors
-        InputX = Input.GetAxis("Horizontal");
-        InputZ = Input.GetAxis("Vertical");
-
-        //anim.SetFloat ("InputZ", InputZ, VerticalAnimTime, Time.deltaTime * 2f);
-        //anim.SetFloat ("InputX", InputX, HorizontalAnimSmoothTime, Time.deltaTime * 2f);
-
-        //Calculate the Input Magnitude
-        Speed = new Vector2(InputX, InputZ).sqrMagnitude;
-
-        //Physically move player
-
-        if (Speed > allowPlayerRotation)
+        if(CanMove)
         {
-            anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
+            //Calculate Input Vectors
+            InputX = Input.GetAxis("Horizontal");
+            InputZ = Input.GetAxis("Vertical");
+
+            //anim.SetFloat ("InputZ", InputZ, VerticalAnimTime, Time.deltaTime * 2f);
+            //anim.SetFloat ("InputX", InputX, HorizontalAnimSmoothTime, Time.deltaTime * 2f);
+
+            //Calculate the Input Magnitude
+            Speed = new Vector2(InputX, InputZ).sqrMagnitude;
+
+            //Physically move player
+
+            if (Speed > allowPlayerRotation)
+            {
+                anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
+            }
+            else if (Speed < allowPlayerRotation)
+            {
+                anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
+            }
         }
-        else if (Speed < allowPlayerRotation)
-        {
-            anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
-        }
+        
     }
 
     private void Move(Vector3 moveDirection)

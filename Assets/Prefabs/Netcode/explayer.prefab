@@ -7064,11 +7064,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignoringInputs: 0
+  speed_up_count: 0
+  attack_cooldown: 0
   moveSpeed: 7
   rotationSpeed: 100
   jumpForce: 6
   playerHeightOffset: 1.15
   distanceAhead: 0.5
+  CanMove: 1
   run_effect: {fileID: 6668612801060810934}
   anim: {fileID: 0}
   HorizontalAnimSmoothTime: 0.2
@@ -7093,6 +7096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd34c9997d1798f4f81a55f18c9df26f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  real_cooldown: 0
   currentEnergy: 0
   Ultimate_effect: {fileID: 8070146952603827218}
   PlusSound: {fileID: 3993497926468421209}
@@ -7165,7 +7169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6de86b9268f3ac4e86672e13300dd00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startCountdown: 3
+  startCountdown: 5
   endCountdown: 10
 --- !u!136 &-6524043538347173939
 CapsuleCollider:
@@ -10893,7 +10897,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 616cf7f5cffb52e4caa0df9070ee4067, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

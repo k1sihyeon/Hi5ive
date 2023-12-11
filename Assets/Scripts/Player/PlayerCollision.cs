@@ -17,6 +17,7 @@ public class PlayerCollision : NetworkBehaviour {
         public const short OBSTACLE_LAYER = 8;
     }
 
+    public bool real_cooldown = false;
     private PlayerController player;
     private Volume volume;
     private ChromaticAberration aberration;
@@ -87,6 +88,12 @@ public class PlayerCollision : NetworkBehaviour {
         
     }
 
+    [ServerRpc]
+    private void SendCoolDownServerRpc()
+    {
+        real_cooldown = true;
+    }
+
     void UpdateUltSlider() {
 
         if(IsLocalPlayer) {
@@ -104,10 +111,12 @@ public class PlayerCollision : NetworkBehaviour {
         ignoringCollisions = true;
         gameObject.layer = Layer.PLAYER_ULTIMATE_LAYER; //충돌처리 꺼진 레이어로 변경
 
-        PlayerController.instance.moveSpeed = 15f;
+        ultimateClientRpc();
+        
+        /*PlayerController.instance.moveSpeed = 15f;
         UpdatePlayerSpeedClientRpc(15f);
 
-        UpdateChromaticAberrationClientRpc(0.8f);
+        UpdateChromaticAberrationClientRpc(0.8f);*/
 
         Invoke("OffUltimate", 3);
     }
@@ -116,10 +125,11 @@ public class PlayerCollision : NetworkBehaviour {
         Debug.Log("Off Ultimate");
         gameObject.layer = Layer.PLAYER_LAYER; //원래 레이러로 복구
 
-        PlayerController.instance.moveSpeed = 5f;
-        UpdatePlayerSpeedClientRpc(5f);
+        ultimateOffClientRpc();
+        /*PlayerController.instance.moveSpeed = 7f;
+        UpdatePlayerSpeedClientRpc(7f);*/
 
-        UpdateChromaticAberrationClientRpc(0f);
+        /*UpdateChromaticAberrationClientRpc(0f);*/
 
         ignoringCollisions = false;
     }
@@ -183,22 +193,44 @@ public class PlayerCollision : NetworkBehaviour {
 
             energyIncreaseRate = 0f;
 
-            if (collision.gameObject.CompareTag("Enemy")) {
-                ShakeCameraClientRpc();
-                energyIncreaseRate = 50f;
-                NetworkDestroy(collision);
-            }
+            if (!real_cooldown)
+            {
+                /*if (collision.gameObject.CompareTag("Enemy"))
+                {
+                    player.speed_up_count++;
+                    player.attack_cooldown = true;
+                    StartCoroutine(Reset_attack_cooldown(3f));
+                    ShakeCameraClientRpc();
+                    energyIncreaseRate = 50f;
+                    NetworkDestroy(collision);
+                }
 
-            if (collision.gameObject.CompareTag("BallObstacle")) {
-                ShakeCameraClientRpc();
-                energyIncreaseRate = 100f;
-                NetworkDestroy(collision);
-            }
+                if (collision.gameObject.CompareTag("BallObstacle"))
+                {
+                    player.speed_up_count++;
+                    player.attack_cooldown = true;
+                    StartCoroutine(Reset_attack_cooldown(3f));
+                    ShakeCameraClientRpc();
+                    energyIncreaseRate = 100f;
+                    NetworkDestroy(collision);
+                }*/
 
-            if(collision.gameObject.CompareTag("Obstacle")) {
-                ShakeCameraClientRpc();
-                energyIncreaseRate = 30f;
+                if (collision.gameObject.CompareTag("Obstacle"))
+                {
+                    real_cooldown = true;
+                    StartCoroutine(Resetrealcooldown(3f));
+                    abcClientRpc();
+                    ShakeCameraClientRpc();
+                    energyIncreaseRate = 30f;
+                    if (currentEnergy < 100)
+                    {
+                        aabcClientRpc();
+                    }
+
+
+                }
             }
+            
 
             
 
@@ -208,10 +240,12 @@ public class PlayerCollision : NetworkBehaviour {
 
             //Ultimate
             if (currentEnergy >= maxEnergy) {
+                aaabcClientRpc();
                 OnUltimate();
                 Ultimate_effectOnClientRpc();
                 StartCoroutine(Ultimate_corutine(3f));
-
+                
+                
                 
 
             }
@@ -226,6 +260,70 @@ public class PlayerCollision : NetworkBehaviour {
 
     }
 
+
+    [ClientRpc]
+    private void ultimateClientRpc()
+    {
+        if (IsLocalPlayer)
+        {
+            player.CanMove = true;
+            player.moveSpeed = 15f;
+            UpdateChromaticAberrationClientRpc(0.8f);
+        }
+    }
+    [ClientRpc]
+    private void ultimateOffClientRpc()
+    {
+        if (IsLocalPlayer)
+        {
+            player.CanMove = true;
+            player.moveSpeed = 7f;
+            UpdateChromaticAberrationClientRpc(0f);
+        }
+    }
+
+    [ClientRpc]
+    private void abcClientRpc()
+    {
+        if(IsLocalPlayer)
+        {
+            player.speed_up_count++;
+            player.attack_cooldown = true;
+            StartCoroutine(Reset_attack_cooldown(3f));
+        }
+        
+    }
+
+    [ClientRpc]
+    private void aabcClientRpc()
+    {
+        if (IsLocalPlayer)
+        {
+            player.moveSpeed = 0;
+            player.CanMove = false;
+            StartCoroutine(DelayedResetSpeedRpc(1f));
+            StartCoroutine(ResetCanMove(1f));
+        }
+        
+    }
+
+    [ClientRpc]
+    private void aaabcClientRpc()
+    {
+        if(IsLocalPlayer)
+        {
+            player.speed_up_count++;
+            StartCoroutine(speed_up_count_minus(3f));
+            player.CanMove = true;
+        }
+        
+    }
+
+    private IEnumerator speed_up_count_minus(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        player.speed_up_count--;
+    }
     /*private void OnTriggerEnter(Collider collision)
     {
         randombox_result = Random.Range(0, 2);
@@ -262,6 +360,25 @@ public class PlayerCollision : NetworkBehaviour {
         
            
     }*/
+
+
+    private IEnumerator ResetCanMove(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        player.CanMove = true;
+    }
+
+    private IEnumerator Resetrealcooldown(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        real_cooldown = false;
+    }
+
+    private IEnumerator Reset_attack_cooldown(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        player.attack_cooldown = false;
+    }
 
     [ClientRpc]
     private void UpdateChromaticAberrationClientRpc(float value) {
@@ -313,8 +430,23 @@ public class PlayerCollision : NetworkBehaviour {
         yield return new WaitForSeconds(delay);
         // 대기 후에 속도를 5로 변경
         PlayerController.instance.moveSpeed = 5f;
-        player.moveSpeed = 5f;
+        player.moveSpeed = 7f;
     }
+
+
+    private IEnumerator DelayedResetSpeedRpc(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // 대기 후에 속도를 5로 변경
+        player.speed_up_count--;
+        if(player.speed_up_count==0)
+        {
+            Debug.Log("리셋");
+            player.moveSpeed = 7f;
+        }
+
+    }
+
 
     [ClientRpc]
     private void CollisionClientRpc(ulong enemyNetworkId) {

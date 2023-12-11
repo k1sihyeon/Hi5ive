@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class SpeedUpHandler : NetworkBehaviour
 {
     private PlayerController player;
+    private PlayerCollision player_collision_info;
     private Volume volume;
     private ChromaticAberration chromaticAberration;
     private int randombox_result;
@@ -51,10 +52,14 @@ public class SpeedUpHandler : NetworkBehaviour
             //chromaticAberration.intensity.value = 0.5f;
             UpdateChromaticAberrationClientRpc(0.5f);
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            player.moveSpeed = 10f;
-
-            // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
-            StartCoroutine(ResetSpeedAfterDelay(2f));
+            if(player.moveSpeed<15)
+            {
+                player.moveSpeed = 10f;
+                player.speed_up_count++;
+                // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
+                StartCoroutine(ResetSpeedAfterDelay(2f));
+            }
+            
         }
         if(other.CompareTag("Super_SpeedUp"))
         {
@@ -63,7 +68,7 @@ public class SpeedUpHandler : NetworkBehaviour
             UpdateChromaticAberrationClientRpc(0.7f);
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
             player.moveSpeed = 15f;
-
+            player.speed_up_count++;
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(3f));
         }
@@ -84,6 +89,7 @@ public class SpeedUpHandler : NetworkBehaviour
                 RandomEffect boxeffect = other.gameObject.GetComponent<RandomEffect>();
                 boxeffect.effect(randombox_result);
                 player.moveSpeed = randombox_result + 5;
+                player.speed_up_count++;
                 UpdatePlayerSpeedClientRpc(randombox_result + 5);
                 StartCoroutine(ResetSpeedAfterDelayRpc(3f));
                 NetworkDestroy_Trigger(other);
@@ -91,6 +97,17 @@ public class SpeedUpHandler : NetworkBehaviour
             
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Obstacle"))
+        {
+            //player.CanMove = false;
+            //StartCoroutine(ResetCanMove(1f));
+        }
+    }
+
+
 
     [ClientRpc]
     private void UpdatePlayerSpeedClientRpc(float speed)
@@ -119,8 +136,13 @@ public class SpeedUpHandler : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
         //chromaticAberration.intensity.value = 0.0f;
-        UpdateChromaticAberrationClientRpc(0f);
-        player.moveSpeed = 7f;
+        player.speed_up_count--;
+        if(player.speed_up_count==0)
+        {
+            UpdateChromaticAberrationClientRpc(0f);
+            player.moveSpeed = 7f;
+        }
+        
     }
 
     private IEnumerator ResetSpeedAfterDelayRpc(float delay)
@@ -128,9 +150,14 @@ public class SpeedUpHandler : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         // 3초 후에 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
         //chromaticAberration.intensity.value = 0.0f;
-        UpdateChromaticAberrationClientRpc(0f);
-        player.moveSpeed = 7f;
-        UpdatePlayerSpeedClientRpc(player.moveSpeed);
+        player.speed_up_count--;
+        if(player.speed_up_count==0)
+        {
+            UpdateChromaticAberrationClientRpc(0f);
+            player.moveSpeed = 7f;
+            UpdatePlayerSpeedClientRpc(player.moveSpeed);
+        }
+        
     }
 
     [ClientRpc]
