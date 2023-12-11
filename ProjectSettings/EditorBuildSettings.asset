@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/End_Result.unity
     guid: 9f6d7bfe16fd9bb41a215338a2ef0dd8
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SignUpScene.unity
     guid: f65f68144b23685438f422d6a1ca582c
   - enabled: 0

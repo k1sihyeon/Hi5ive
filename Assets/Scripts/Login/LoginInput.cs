@@ -8,9 +8,8 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.Diagnostics;
 
-public class LoginInput : MonoBehaviour
-{
-    
+public class LoginInput : MonoBehaviour {
+
     [SerializeField] private TMP_InputField idInputField;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private Button loginBtn;
@@ -23,15 +22,15 @@ public class LoginInput : MonoBehaviour
     }
 
     private bool IsFieldEmpty() {
-        if(idInputField.text == string.Empty && passwordInputField.text == string.Empty) {
+        if (idInputField.text == string.Empty && passwordInputField.text == string.Empty) {
             SetMessage("ID와 Password를 입력하세요");
             return true;
         }
-        else if(idInputField.text == "") {
+        else if (idInputField.text == "") {
             SetMessage("ID를 입력하세요");
             return true;
         }
-        else if(passwordInputField.text == "") {
+        else if (passwordInputField.text == "") {
             SetMessage("Password를 입력하세요");
             return true;
         }
@@ -77,7 +76,7 @@ public class LoginInput : MonoBehaviour
             }
             else {
                 Debug.LogError("로그인이 실패했습니다. : " + callback);
-                
+
                 loginBtn.interactable = true;
 
                 string message = string.Empty;
@@ -114,7 +113,7 @@ public class LoginInput : MonoBehaviour
 
     private void Update() {
 
-        if(Input.GetKeyDown(KeyCode.Return)) {
+        if (Input.GetKeyDown(KeyCode.Return)) {
             OnClickLogin();
         }
 
