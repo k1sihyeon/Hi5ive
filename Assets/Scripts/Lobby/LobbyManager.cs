@@ -11,6 +11,8 @@ using UnityEngine.UI;
 public class LobbyManager : MonoBehaviour
 {
 
+    [SerializeField] private Button tutorialBtn;
+
     [SerializeField] private TMP_InputField localIpInputField;
     [SerializeField] private Button localJoinBtn;
     [SerializeField] private TMP_Dropdown localDD;
@@ -87,6 +89,10 @@ public class LobbyManager : MonoBehaviour
             int ddIdx = hostDD.value;
             string ddText = hostDD.options[ddIdx].text;
             SceneManager.LoadScene(ddText);
+        });
+
+        tutorialBtn.onClick.AddListener(() => {
+            SceneManager.LoadScene("TutorialScene");
         });
 
     }
