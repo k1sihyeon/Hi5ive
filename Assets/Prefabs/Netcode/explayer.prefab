@@ -7068,7 +7068,7 @@ MonoBehaviour:
   attack_cooldown: 0
   moveSpeed: 7
   rotationSpeed: 100
-  jumpForce: 6
+  jumpForce: 5
   playerHeightOffset: 1.15
   distanceAhead: 0.5
   CanMove: 1

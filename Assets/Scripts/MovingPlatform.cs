@@ -87,7 +87,7 @@ public class MovingPlatform : NetworkBehaviour
 			if (state == 0)
 			{
 				timer += Time.deltaTime;
-				transform.Translate(Vector3.up * Time.deltaTime * speed);
+				transform.Translate(Vector3.left * Time.deltaTime * speed);
 				if (timer >= time)
 				{
 					timer = 0;
@@ -106,7 +106,7 @@ public class MovingPlatform : NetworkBehaviour
 			if (state == 2)
 			{
 				timer += Time.deltaTime;
-				transform.Translate(Vector3.up * Time.deltaTime * -speed);
+				transform.Translate(Vector3.left * Time.deltaTime * -speed);
 				if (timer >= time)
 				{
 					timer = 0;
@@ -186,7 +186,7 @@ public class MovingPlatform : NetworkBehaviour
 			if (state == 0)
 			{
 				timer += Time.deltaTime;
-				transform.Translate(Vector3.up * Time.deltaTime * speed);
+				transform.Translate(Vector3.left * Time.deltaTime * speed);
 				if (timer >= time)
 				{
 					timer = 0;
@@ -205,7 +205,7 @@ public class MovingPlatform : NetworkBehaviour
 			if (state == 2)
 			{
 				timer += Time.deltaTime;
-				transform.Translate(Vector3.up * Time.deltaTime * -speed);
+				transform.Translate(Vector3.left * Time.deltaTime * -speed);
 				if (timer >= time)
 				{
 					timer = 0;
