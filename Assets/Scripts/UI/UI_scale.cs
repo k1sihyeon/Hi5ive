@@ -7,7 +7,7 @@ public class UI_scale : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public float scaleFactor = 1.3f; // 마우스 오버 시 크기 변화 비율
     public float shrinkFactor = 0.7f; // 마우스 벗어날 시 크기 변화 비율
     public float smoothSpeed = 10f;   // 크기 변화 속도
-    public Image check;
+    //public Image check;
 
     private Vector3 originalScale;
     private Vector3 targetScale;
@@ -30,13 +30,13 @@ public class UI_scale : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         isMouseOver = true;
-        check.enabled = true;
+        //check.enabled = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isMouseOver = false;
-        check.enabled = false;
+        //check.enabled = false;
         Shrink();
     }
 
