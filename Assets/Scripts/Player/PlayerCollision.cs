@@ -221,7 +221,7 @@ public class PlayerCollision : NetworkBehaviour {
                     StartCoroutine(Resetrealcooldown(3f));
                     abcClientRpc();
                     ShakeCameraClientRpc();
-                    energyIncreaseRate = 30f;
+                    energyIncreaseRate = 15f;
                     if (currentEnergy < 100)
                     {
                         aabcClientRpc();

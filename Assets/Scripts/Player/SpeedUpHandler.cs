@@ -52,7 +52,7 @@ public class SpeedUpHandler : NetworkBehaviour
             //chromaticAberration.intensity.value = 0.5f;
             UpdateChromaticAberrationClientRpc(0.5f);
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            if(player.moveSpeed<15)
+            if(player.moveSpeed<12)
             {
                 player.moveSpeed = 10f;
                 player.speed_up_count++;
@@ -67,7 +67,7 @@ public class SpeedUpHandler : NetworkBehaviour
             //chromaticAberration.intensity.value = 0.7f;
             UpdateChromaticAberrationClientRpc(0.7f);
             // 클라이언트에 속도 변경을 알리기 위해 ClientRpc 호출
-            player.moveSpeed = 15f;
+            player.moveSpeed = 12f;
             player.speed_up_count++;
             // 3초 후에 다시 속도를 5로 변경하는 코루틴 시작
             StartCoroutine(ResetSpeedAfterDelay(3f));
