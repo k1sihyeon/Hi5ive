@@ -2,6 +2,7 @@
  ✨✨ 오픈소스프로젝트 ✨✨ <br>
  유니티로 구현하는 VR 멀티 플레이어 경쟁 달리기 게임 <br>
  Unity Netcode for Gameobject, thebackend.io 등 사용 중
+ Unity: 2021.3.8f1
 
 ## 협업 규칙
 - [INITIAL] : repository를 생성하고 최초에 파일을 업로드 할 때
