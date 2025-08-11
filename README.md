@@ -76,16 +76,16 @@
 
 ## 4. 사용 설명서
   1. 회원가입 하기 <br>
-     ![image](https://github.com/k1sihyeon/Hi5ive/assets/96001080/9ff0676f-4ab2-415c-bde6-04b48e032357)
+     ![image](https://github.com/k1sihyeon/Hi5ive/assets/96001080/9ff0676f-4ab2-415c-bde6-04b48e032357) <br>
     게임 실행 이후, 회원가입하기 버튼을 클릭한다.
 아이디, 비밀번호, 닉네임을 입력하고 회원가입을 클릭한다.
 회원가입 이후, 로그인 화면으로 가기 버튼을 클릭한다. 
 
   2. 로그인 하기 <br>
-     ![image](https://github.com/k1sihyeon/Hi5ive/assets/96001080/24f70bae-b2ec-42e5-8260-6c595745a107)
+     ![image](https://github.com/k1sihyeon/Hi5ive/assets/96001080/24f70bae-b2ec-42e5-8260-6c595745a107) <br>
      회원가입한 아이디와 비밀번호를 입력하고 로그인을 클릭한다.
 
-  3. 호스트/클라이언트 선택
+  3. 호스트/클라이언트 선택 <br>
     ![image](https://github.com/k1sihyeon/Hi5ive/assets/96001080/f01d2304-2ade-42f1-b0f0-8de325b38a11) <br>
     방장의 IP를 입력하고 접속을 누른다.
 
@@ -174,6 +174,16 @@ Ultimate 모드에서는 속도가 상당량 증가하며 모든 충돌을 무�
 
  - 개발 계획 대비 변경점 등<br>
    중간 점검이후의 계획에서 추가 스테이지와 Unity Lobby/Relay 등은 개발하지 못하였지만, 게임의 디테일을 높일 수 있도록 사운드, 애니메이션, 카메라 효과, 엔딩 씬 등을 개발하게 되었다.
+
+## 6. 데모 영상
+ - 멀티 플레이 개발 데모 <br>
+   [![Multi Play Demo](http://img.youtube.com/vi/6JChdBldutE/0.jpg)](https://youtu.be/6JChdBldutE)
+   <br>
+   
+ - 게임 플레이 최종 데모 <br>
+   [![General Gameplay Demo](http://img.youtube.com/vi/03AHyE1eikA/0.jpg)](https://youtu.be/03AHyE1eikA)
+
+- - -
 
 ## 협업 규칙
 - [INITIAL] : repository를 생성하고 최초에 파일을 업로드 할 때
